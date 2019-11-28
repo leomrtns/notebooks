@@ -1,9 +1,9 @@
 # The name of the project shown in the navigation bar (it links to the
 # home page).
-name: "Bioinformatics notes"
+name: "Bioinformatics Notes"
 
 # Link to the source repository (e.g., on Github, Gitlab).
-repo: "https://leomrtns.github.io/notebooks/"
+repo: "https://github.com/leomrtns/notebooks"
 
 # Footer added to the bottom of some webpages.
 footer: "&copy; 2019 Leonardo de Oliveira Martins"
@@ -12,26 +12,23 @@ footer: "&copy; 2019 Leonardo de Oliveira Martins"
 # commit id (SHA1) and commit modification date.
 add_commit_info: True
 
-# These subdirectories contain Jupyter notebooks that will be rendered
-# into webpages.
-include_dir: ["analysis", "setup", "license", "notes"]
+# These subdirectories contain Jupyter notebooks that will be rendered into webpages.
+include_dir: ["tab_introduction", "tab_coding", "tab_phylogenetics", "tab_license"]
 
-# Do not add links in the navigation bar for the Jupyter notebooks in
-# these subdirectories.
-hide_navbar: ["analysis"]
+# Do not add links in the navigation bar for the Jupyter notebooks in these subdirectories.
+hide_navbar: ["tab_introduction"]
 
-# Any Jupyter notebooks listed here will not be rendered into webpages
-# (e.g., "analysis/temp.ipynb").
+# Any Jupyter notebooks listed here will not be rendered into webpages (e.g., "analysis/temp.ipynb").
 exclude_file: []
 
 # This is the notebook used to generate the home page for the
 # website. If no home page is set, an Overview.ipynb file is
 # automatically generated and saved in the base project directory.
-homepage: "analysis/index.ipynb"
+homepage: "tab_introduction/index.ipynb"
 
 # The name of the homepage link shown in the navigation bar.
 # Set to NULL to hide it
-homepage_label: "Overview"
+homepage_label: "Introduction"
 
 # The name of the link to the source repository. It is shown in the
 # top-right corner of the navigation bar. Set it to NULL to hide it.
@@ -39,18 +36,16 @@ homepage_label: "Overview"
 # show a Github logo (the "Octocat"). 
 source_label: "source"
 
-# Bootstrap theme. Current supported themes are "cerulean", "flatly"
-# and "readable"; see the docs/css directory.
-theme: "readable"
+# Bootstrap theme. Current supported themes are "cerulean", "flatly" and "readable"; see the docs/css directory.
+theme: "spacelab"
 
 # Font used to show all code and text in the Jupyter notebooks (e.g.,
-# "Droid Sans"). Set to NULL to inherit the font used by the Bootsrap
-# theme.
+# "Droid Sans"). Set to NULL to inherit the font used by the Bootstrap  theme.
 font: NULL
 
 # Set to True to add a table-of-contents (TOC) to the left-hand side
 # of each of the Jupyter notebook webpages; otherwise, set to False.
-notebook_toc: False
+notebook_toc: True 
 
 # Set this variable to enable auto-commit.
 # release_message: "Build website with jnbinder."

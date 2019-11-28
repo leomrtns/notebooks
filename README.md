@@ -69,7 +69,7 @@
 Copyright (C) 2019-today Leonardo de Oliveira Martins
 
 The Jupyter notebooks (that is, the content created here) is free software.
-you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation (http://www.gnu.org/copyleft/gpl.html).
+You can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation (http://www.gnu.org/copyleft/gpl.html).
 
 ## Credits of original [ipynb website](https://stephenslab.github.io/ipynb-website):
 Please see [the ipynb website project](https://github.com/stephenslab/ipynb-website#credits) for complete credits and
