@@ -1,9 +1,9 @@
 var IntroductionArray = []
 var IntroductionDict = {}
 var IntroductionArrayMap = {}
-var CodingArray = ['00.zero', '001.first', '003.three']
-var CodingDict = {'000-first-C-code-1': '00.zero', '001-first-C-code-1': '001.first', '003-1': '003.three'}
-var CodingArrayMap = {'00.zero': '000 first C code', '001.first': '001 first C code', '003.three': '003'}
+var CodingArray = []
+var CodingDict = {'001-first-C-code-1': '001.first', '002-second-C-code-1': '002.second'}
+var CodingArrayMap = {'001.first': '001 first C code', '002.second': '002 second C code'}
 var PhylogeneticsArray = []
 var PhylogeneticsDict = {}
 var PhylogeneticsArrayMap = {}
