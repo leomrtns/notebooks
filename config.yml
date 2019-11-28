@@ -8,15 +8,14 @@ repo: "https://github.com/leomrtns/notebooks"
 # Footer added to the bottom of some webpages.
 footer: "&copy; 2019 Leonardo de Oliveira Martins"
 
-# When set to True, populate the footer of each notebook with the git
-# commit id (SHA1) and commit modification date.
+# When set to True, populate the footer of each notebook with the git commit id (SHA1) and commit modification date.
 add_commit_info: True
 
 # These subdirectories contain Jupyter notebooks that will be rendered into webpages.
-include_dir: ["tab_introduction", "tab_coding", "tab_phylogenetics", "tab_license"]
+include_dir: ["Introduction", "Coding", "Phylogenetics", "License"]
 
 # Do not add links in the navigation bar for the Jupyter notebooks in these subdirectories.
-hide_navbar: ["tab_introduction"]
+hide_navbar: ["Introduction"]
 
 # Any Jupyter notebooks listed here will not be rendered into webpages (e.g., "analysis/temp.ipynb").
 exclude_file: []
@@ -24,7 +23,7 @@ exclude_file: []
 # This is the notebook used to generate the home page for the
 # website. If no home page is set, an Overview.ipynb file is
 # automatically generated and saved in the base project directory.
-homepage: "tab_introduction/index.ipynb"
+homepage: "Introduction/index.ipynb"
 
 # The name of the homepage link shown in the navigation bar.
 # Set to NULL to hide it
