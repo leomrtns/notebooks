@@ -1,6 +1,6 @@
 # The name of the project shown in the navigation bar (it links to the
 # home page).
-name: "Bioinformatics Notes"
+name: "Bioinformatics Notebooks"
 
 # Link to the source repository (e.g., on Github, Gitlab).
 repo: "https://github.com/leomrtns/notebooks"
