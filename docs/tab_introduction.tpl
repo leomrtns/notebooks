@@ -10,11 +10,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <link rel="stylesheet" type="text/css" href="../css/jt.css">
-<link rel="stylesheet" type="text/css" href="../css/readable.css">
+<link rel="stylesheet" type="text/css" href="../css/spacelab.css">
 <link rel="stylesheet" type="text/css" href="../css/toc2.css">
 
 <link href="../site_libs/jqueryui-1.11.4/jquery-ui.css">
-<link rel="stylesheet" href="../site_libs/bootstrap-3.3.5/css/readable.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="../site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
@@ -123,6 +123,45 @@ function sortDataFrame(id, n, dtype) {
 </script>
 
 <script>
+$( document ).ready(function(){
+            var cfg={'threshold':{{ nb.get('metadata', {}).get('toc', {}).get('threshold', '3') }},     // depth of toc (number of levels)
+             'number_sections': false,
+             'toc_cell': false,          // useless here
+             'toc_window_display': true, // display the toc window
+             "toc_section_display": "block", // display toc contents in the window
+             'sideBar':true,       // sidebar or floating window
+             'navigate_menu':false       // navigation menu (only in liveNotebook -- do not change)
+            }
+            var st={};                  // some variables used in the script
+            st.rendering_toc_cell = false;
+            st.config_loaded = false;
+            st.extension_initialized=false;
+            st.nbcontainer_marginleft = $('#notebook-container').css('margin-left')
+            st.nbcontainer_marginright = $('#notebook-container').css('margin-right')
+            st.nbcontainer_width = $('#notebook-container').css('width')
+            st.oldTocHeight = undefined
+            st.cell_toc = undefined;
+            st.toc_index=0;
+            // fire the main function with these parameters
+            table_of_contents(cfg, st);
+            var file=tab_introductionDict[$("h1:first").attr("id")];
+            $("#toc-level0 a").css("color","#126dce");
+            $('a[href="#'+$("h1:first").attr("id")+'"]').hide()
+            var docs=tab_introductionArray;
+            var docs_map=tab_introductionArrayMap;
+            var pos=tab_introductionArray.indexOf(file);
+            for (var a=pos;a>=0;a--){
+                  $('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>').insertBefore("#toc-level0 li:eq(0)");
+            }
+            $('a[href="'+file+'.html'+'"]').css("color","#126dce");
+            for (var a=pos+1;a<docs.length;a++){
+                  $(".toc #toc-level0").append('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>');
+            }
+            // $("#toc-header").hide(); // comment out because it prevents search bar from displaying
+    });
+</script>
+
+<script>
 // manage active state of menu based on current page
 $(document).ready(function () {
   // active menu anchor
@@ -148,7 +187,7 @@ $(document).ready(function () {
 
 
 
-<title>Bioinformatics notes</title>
+<title>Bioinformatics Notes</title>
 
 <style type = "text/css">
 body {
@@ -173,32 +212,32 @@ body {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="../index.html">Bioinformatics notes</a>
+      <a class="navbar-brand" href="../index.html">Bioinformatics Notes</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         
 <li>
-  <a href="../index.html">Overview</a>
+  <a href="../index.html">Introduction</a>
 </li>
         
 <li>
-  <a href="../setup.html">Setup</a>
+  <a href="../tab_coding.html">Tab Coding</a>
 </li>
         
 <li>
-  <a href="../license.html">License</a>
+  <a href="../tab_phylogenetics.html">Tab Phylogenetics</a>
 </li>
         
 <li>
-  <a href="../notes.html">Notes</a>
+  <a href="../tab_license.html">Tab License</a>
 </li>
         
       </ul>
         
 <ul class="nav navbar-nav navbar-right">
 <li>
-   <a href="https://leomrtns.github.io/notebooks/"> source </a>
+   <a href="https://github.com/leomrtns/notebooks"> source </a>
 </li>
 </ul>
         
