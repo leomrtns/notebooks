@@ -144,12 +144,12 @@ $( document ).ready(function(){
             st.toc_index=0;
             // fire the main function with these parameters
             table_of_contents(cfg, st);
-            var file=tab_introductionDict[$("h1:first").attr("id")];
+            var file=LicenseDict[$("h1:first").attr("id")];
             $("#toc-level0 a").css("color","#126dce");
             $('a[href="#'+$("h1:first").attr("id")+'"]').hide()
-            var docs=tab_introductionArray;
-            var docs_map=tab_introductionArrayMap;
-            var pos=tab_introductionArray.indexOf(file);
+            var docs=LicenseArray;
+            var docs_map=LicenseArrayMap;
+            var pos=LicenseArray.indexOf(file);
             for (var a=pos;a>=0;a--){
                   $('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>').insertBefore("#toc-level0 li:eq(0)");
             }
@@ -222,15 +222,15 @@ body {
 </li>
         
 <li>
-  <a href="../tab_coding.html">Tab Coding</a>
+  <a href="../Coding.html">Coding</a>
 </li>
         
 <li>
-  <a href="../tab_phylogenetics.html">Tab Phylogenetics</a>
+  <a href="../Phylogenetics.html">Phylogenetics</a>
 </li>
         
 <li>
-  <a href="../tab_license.html">Tab License</a>
+  <a href="../License.html">License</a>
 </li>
         
       </ul>

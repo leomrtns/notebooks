@@ -186,15 +186,15 @@ $(document).ready(function () {
 </li>
         
 <li>
-  <a href="./tab_coding.html">Tab Coding</a>
+  <a href="./Coding.html">Coding</a>
 </li>
         
 <li>
-  <a href="./tab_phylogenetics.html">Tab Phylogenetics</a>
+  <a href="./Phylogenetics.html">Phylogenetics</a>
 </li>
         
 <li>
-  <a href="./tab_license.html">Tab License</a>
+  <a href="./License.html">License</a>
 </li>
         
       </ul>

@@ -140,12 +140,12 @@ $( document ).ready(function(){
             st.toc_index=0;
             // fire the main function with these parameters
             table_of_contents(cfg, st);
-            var file=tab_codingDict[$("h1:first").attr("id")];
+            var file=CodingDict[$("h1:first").attr("id")];
             $("#toc-level0 a").css("color","#126dce");
             $('a[href="#'+$("h1:first").attr("id")+'"]').hide()
-            var docs=tab_codingArray;
-            var docs_map=tab_codingArrayMap;
-            var pos=tab_codingArray.indexOf(file);
+            var docs=CodingArray;
+            var docs_map=CodingArrayMap;
+            var pos=CodingArray.indexOf(file);
             for (var a=pos;a>=0;a--){
                   $('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>').insertBefore("#toc-level0 li:eq(0)");
             }
@@ -218,15 +218,15 @@ body {
 </li>
         
 <li>
-  <a href="../tab_coding.html">Tab Coding</a>
+  <a href="../Coding.html">Coding</a>
 </li>
         
 <li>
-  <a href="../tab_phylogenetics.html">Tab Phylogenetics</a>
+  <a href="../Phylogenetics.html">Phylogenetics</a>
 </li>
         
 <li>
-  <a href="../tab_license.html">Tab License</a>
+  <a href="../License.html">License</a>
 </li>
         
       </ul>
@@ -2830,7 +2830,7 @@ loaded via a namespace (and not attached):
 </div>
 <hr>
 &copy; 2019 Leonardo de Oliveira Martins
-<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/b8e75a959e52388be3b34399f71f012c93381463/tab_coding/seasonal-trends.ipynb"><code>tab_coding/seasonal-trends.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Thu Nov 28 13:42:54 2019 <a href="https://github.com/leomrtns/notebooks/commit/b8e75a959e52388be3b34399f71f012c93381463">revision 1, b8e75a9</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/bc4e851c04c5d111efe42e916af3a1ae4c7c0946/Coding/seasonal-trends.ipynb"><code>Coding/seasonal-trends.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Thu Nov 28 13:54:10 2019 <a href="https://github.com/leomrtns/notebooks/commit/bc4e851c04c5d111efe42e916af3a1ae4c7c0946">revision 1, bc4e851</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
 </div>
 </div>
 </body>
