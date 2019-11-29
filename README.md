@@ -1,5 +1,8 @@
 # Webpage from Jupyter notebooks
 
+* I should have a "legacy" tab with code that relies on old versions of code.
+In such cases the jupyter notebook doesn't work anymore (unless I also copy here a version of the libraries)
+
 ## Notes from the original [ipynb website](https://stephenslab.github.io/ipynb-website)
 
 + You can add option `-j` to the command if you want to control the 
