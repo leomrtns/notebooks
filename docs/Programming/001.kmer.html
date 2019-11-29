@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="ipynb_website:version" content="0.9.7" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css" href="../css/jt.css">
+<link rel="stylesheet" type="text/css" href="../css/flatly.css">
+<link rel="stylesheet" type="text/css" href="../css/toc2.css">
+
+<link href="../site_libs/jqueryui-1.11.4/jquery-ui.css">
+<link rel="stylesheet" href="../site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<link rel="stylesheet"
+      href="../site_libs/highlightjs/null.min.css"
+      type="text/css" />
+
+<script src="../site_libs/highlightjs/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+<script src="../js/doc_toc.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+        },
+        "HTML-CSS": {
+            preferredFont: "TeX",
+            availableFonts: ["TeX"],
+            styles: {
+                scale: 110,
+                ".MathJax_Display": {
+                    "font-size": "110%",
+                }
+            }
+        }
+    });
+</script>
+<script>
+function filterDataFrame(id) {
+    var input = document.getElementById("search_" + id);
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("dataframe_" + id);
+    var tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (var i = 1; i < tr.length; i++) {
+        for (var j = 0; j < tr[i].cells.length; ++j) {
+            var matched = false;
+            if (tr[i].cells[j].innerHTML.toUpperCase().indexOf(filter) != -1) {
+                tr[i].style.display = "";
+                matched = true
+                break;
+            }
+            if (!matched)
+                tr[i].style.display = "none";
+        }
+    }
+}
+function sortDataFrame(id, n, dtype) {
+    var table = document.getElementById("dataframe_" + id);
+    var tb = table.tBodies[0]; // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+    var tr = Array.prototype.slice.call(tb.rows, 0); // put rows into array
+    if (dtype === 'numeric') {
+        var fn = function(a, b) { 
+            return parseFloat(a.cells[n].textContent) <= parseFloat(b.cells[n].textContent) ? -1 : 1;
+        }
+    } else {
+        var fn = function(a, b) {
+            var c = a.cells[n].textContent.trim().localeCompare(b.cells[n].textContent.trim()); 
+            return c > 0 ? 1 : (c < 0 ? -1 : 0) }
+    }
+    var isSorted = function(array, fn) {
+        if (array.length < 2)
+            return 1;
+        var direction = fn(array[0], array[1]); 
+        for (var i = 1; i < array.length - 1; ++i) {
+            var d = fn(array[i], array[i+1]);
+            if (d == 0)
+                continue;
+            else if (direction == 0)
+                direction = d;
+            else if (direction != d)
+                return 0;
+            }
+        return direction;
+    }
+    var sorted = isSorted(tr, fn);
+    if (sorted == 1 || sorted == -1) {
+        // if sorted already, reverse it
+        for(var i = tr.length - 1; i >= 0; --i)
+            tb.appendChild(tr[i]); // append each row in order
+    } else {
+        tr = tr.sort(fn);
+        for(var i = 0; i < tr.length; ++i)
+            tb.appendChild(tr[i]); // append each row in order
+    }
+}
+</script>
+
+<script>
+$( document ).ready(function(){
+            var cfg={'threshold':3,     // depth of toc (number of levels)
+             'number_sections': false,
+             'toc_cell': false,          // useless here
+             'toc_window_display': true, // display the toc window
+             "toc_section_display": "block", // display toc contents in the window
+             'sideBar':true,       // sidebar or floating window
+             'navigate_menu':false       // navigation menu (only in liveNotebook -- do not change)
+            }
+            var st={};                  // some variables used in the script
+            st.rendering_toc_cell = false;
+            st.config_loaded = false;
+            st.extension_initialized=false;
+            st.nbcontainer_marginleft = $('#notebook-container').css('margin-left')
+            st.nbcontainer_marginright = $('#notebook-container').css('margin-right')
+            st.nbcontainer_width = $('#notebook-container').css('width')
+            st.oldTocHeight = undefined
+            st.cell_toc = undefined;
+            st.toc_index=0;
+            // fire the main function with these parameters
+            table_of_contents(cfg, st);
+            var file=ProgrammingDict[$("h1:first").attr("id")];
+            $("#toc-level0 a").css("color","#126dce");
+            $('a[href="#'+$("h1:first").attr("id")+'"]').hide()
+            var docs=ProgrammingArray;
+            var docs_map=ProgrammingArrayMap;
+            var pos=ProgrammingArray.indexOf(file);
+            for (var a=pos;a>=0;a--){
+                  $('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>').insertBefore("#toc-level0 li:eq(0)");
+            }
+            $('a[href="'+file+'.html'+'"]').css("color","#126dce");
+            for (var a=pos+1;a<docs.length;a++){
+                  $(".toc #toc-level0").append('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>');
+            }
+            // $("#toc-header").hide(); // comment out because it prevents search bar from displaying
+    });
+</script>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+  // mark it active
+  menuAnchor.parent().addClass('active');
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+<div class="container-fluid main-container">
+<!-- tabsets -->
+<script src="../site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+
+
+<title>Bioinformatics Notebooks</title>
+
+<style type = "text/css">
+body {
+  
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+</style>
+</head>
+
+<body>
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<!-- code folding -->
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html">Bioinformatics Notebooks</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+<li>
+  <a href="../index.html">Introduction</a>
+</li>
+        
+<li>
+  <a href="../Programming.html">Programming</a>
+</li>
+        
+<li>
+  <a href="../Phylogenetics.html">Phylogenetics</a>
+</li>
+        
+<li>
+  <a href="../License.html">License</a>
+</li>
+        
+      </ul>
+        
+<ul class="nav navbar-nav navbar-right">
+<li>
+   <a href="https://github.com/leomrtns/notebooks"> source </a>
+</li>
+</ul>
+        
+      </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="001-K-mer-in-biomcmc-lib-(2019.11.29)">001 K-mer in biomcmc-lib (2019.11.29)<a class="anchor-link" href="#001-K-mer-in-biomcmc-lib-(2019.11.29)">&#182;</a></h1><p>This notebook contains a few details of how kmers are implemented in the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a>. 
+This library is opaque to the user, and contains functions that are common to several projects. 
+The functions discussed here relate to the creation of the k-mers (and their hash values) for a given DNA sequence.</p>
+<p>Please have in mind that these functions are likely to change or at least change names soon &mdash; they are general enough to have allowed me to play with kmers, but are too complex for production-level software. 
+Two missing functionalities are:</p>
+<ol>
+<li>inexact (masked) k-mers. </li>
+<li>rolling hashes</li>
+<li>using 32 bits per hash value (64 bits may be overkill)</li>
+<li>homopolymer compression</li>
+<li>fine-grained control over k-mer sizes</li>
+</ol>
+<p>Some code shown here depends on local libraries, which must be linked at compilation time (<code>//%cflags:-lm</code> etc.)</p>
+<h2 id="1.1-Parameters-of-a-kmer-set">1.1 Parameters of a kmer set<a class="anchor-link" href="#1.1-Parameters-of-a-kmer-set">&#182;</a></h2><p>Since it may be onerous to scan through the DNA sequence several times, I decided to generate kmers for several choices of <code>k</code> in one pass. 
+The library uses 128 bits to store each kmer, and immediately transforms it into its 64 bits hash value.</p>
+<p>Furthermore there are 3 possible encodings for each base: 1, 2, and 4 bits per base.
+The standard used by most kmer algorithms is equivalent to 2 bits per base (<code>A-&gt;00</code>, <code>C-&gt;01</code>, <code>G-&gt;10</code>, <code>T-&gt;11</code>).
+The other two are a compact, GC-content-like one bit per base(<code>A,T-&gt;0</code>, and <code>C,G-&gt;1</code>), and one common in the phylogenetic likelihood structure, that can accommodate ambiguous characters. 
+For instance, since <code>M</code> represents an amino group (<code>C</code> or <code>A</code>), then we can have <code>A-&gt;0001</code>, <code>C-&gt;0010</code>, <code>M-&gt;0011</code>, and <code>N-&gt;1111</code>.</p>
+<p>The code below is implemented in biomcmc-lib (2019.11.29), and is responsible for selecting the sets of k-mer sizes depending on an integer <code>mode</code> given by the user. 
+This code is subject to change.</p>
+<div class="highlight"><pre><span></span><span class="k">static</span> <span class="kt">uint64_t</span> <span class="n">_tbl_mask</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0xffffUL</span><span class="p">,</span> <span class="mh">0xffffffUL</span><span class="p">,</span> <span class="mh">0xffffffffUL</span><span class="p">,</span> <span class="mh">0xffffffffffUL</span><span class="p">,</span> <span class="mh">0xffffffffffffUL</span><span class="p">,</span> <span class="mh">0xffffffffffffUL</span><span class="p">,</span> <span class="mh">0xffffffffffffffffUL</span><span class="p">};</span>
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">_tbl_shift</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>      <span class="mi">48</span><span class="p">,</span>         <span class="mi">40</span><span class="p">,</span>           <span class="mi">32</span><span class="p">,</span>             <span class="mi">24</span><span class="p">,</span>               <span class="mi">16</span><span class="p">,</span>                <span class="mi">8</span><span class="p">,</span>                    <span class="mi">0</span><span class="p">};</span>
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">_tbl_nbyte</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span>       <span class="mi">2</span><span class="p">,</span>          <span class="mi">3</span><span class="p">,</span>            <span class="mi">4</span><span class="p">,</span>              <span class="mi">5</span><span class="p">,</span>                <span class="mi">6</span><span class="p">,</span>                <span class="mi">7</span><span class="p">,</span>                    <span class="mi">8</span><span class="p">};</span>
+<span class="k">static</span> <span class="kt">uint32_t</span> <span class="n">_tbl_seed</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x9040a6</span><span class="p">,</span> <span class="mh">0x10bea992</span><span class="p">,</span>   <span class="mh">0x50edd67d</span><span class="p">,</span>     <span class="mh">0xb05a4f09</span><span class="p">,</span>       <span class="mh">0xf07046c5</span><span class="p">,</span>       <span class="mh">0x9c9445ab</span><span class="p">,</span>           <span class="mh">0xb2500f29</span><span class="p">};</span>
+
+<span class="cm">/* i1[] and i2[] (i.e. elements above to be used on first and second 64bits, respectively */</span>
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">_idx_mode</span><span class="p">[][</span><span class="mi">2</span><span class="p">][</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// contains list of elements from _tbl above to be used, from 1st and 2nd 64bit blocks</span>
+   <span class="p">{{</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>  
+   <span class="p">{{</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>  
+   <span class="p">{{</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span> 
+   <span class="p">{{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+   <span class="p">{{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}},</span>
+   <span class="p">{{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}}</span>
+<span class="p">};</span>   
+<span class="k">static</span> <span class="kt">uint8_t</span> <span class="n">_n_idx</span><span class="p">[][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{{</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">},</span> <span class="p">{</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">},</span> <span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">7</span><span class="p">,</span><span class="mi">4</span><span class="p">}};</span> <span class="c1">// how many elems from _idx_mode[] are used</span>
+
+
+<span class="n">kmer_params</span>
+<span class="nf">new_kmer_params</span> <span class="p">(</span><span class="kt">int</span> <span class="n">mode</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint8_t</span>  <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">bases_per_byte</span><span class="p">,</span> <span class="n">_ba_pe_by</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">};</span> <span class="c1">// bases_per_byte is 4 if dense</span>
+  <span class="n">kmer_params</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="n">kmer_params</span><span class="p">)</span> <span class="n">biomcmc_malloc</span> <span class="p">(</span><span class="k">sizeof</span> <span class="p">(</span><span class="k">struct</span> <span class="n">kmer_params_struct</span><span class="p">));</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">ref_counter</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">hashfunction</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">biomcmc_xxh64</span><span class="p">;</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">dna_in_4_bits</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mh">0xff</span><span class="p">)</span> <span class="n">initialize_dna_to_bit_tables</span> <span class="p">();</span> <span class="c1">// run once per program</span>
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">kmer_class_mode</span> <span class="o">=</span> <span class="n">mode</span><span class="p">;</span>
+  <span class="k">switch</span> <span class="p">(</span><span class="n">mode</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// map each choice to a set of kmers and bitstring encoding (row relates to _idx_mode[] above)</span>
+    <span class="k">case</span> <span class="mi">0</span><span class="o">:</span>  <span class="n">row</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">1</span><span class="o">:</span>  <span class="n">row</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">2</span><span class="o">:</span>  <span class="n">row</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">3</span><span class="o">:</span>
+    <span class="k">default</span><span class="o">:</span> <span class="n">row</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">4</span><span class="o">:</span>  <span class="n">row</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="mi">5</span><span class="o">:</span>  <span class="n">row</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="k">break</span><span class="p">;</span>
+  <span class="p">};</span>
+  <span class="n">bases_per_byte</span> <span class="o">=</span> <span class="n">_ba_pe_by</span><span class="p">[</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">dense</span><span class="p">];</span>
+
+  <span class="n">p</span><span class="o">-&gt;</span><span class="n">n1</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">_n_idx</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">];</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">n2</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">_n_idx</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">1</span><span class="p">];</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">_idx_mode</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">mask1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_mask</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">shift1</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_shift</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">seed</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_seed</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_nbyte</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_nbyte</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">bases_per_byte</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">n2</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">_idx_mode</span><span class="p">[</span><span class="n">row</span><span class="p">][</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">mask2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_mask</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">shift2</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_shift</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">seed</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_tbl_seed</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mh">0x420314a1d</span><span class="p">;</span> <span class="c1">// very noise, much random</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_tbl_nbyte</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">p</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">_tbl_nbyte</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="n">bases_per_byte</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="n">p</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+<p>The small program below prints the resulting set of parameters for each choice of <code>mode</code>.
+Notice that the code must be linked to the <code>libbiomcmc.a</code> local library (some programs, like <a href="https://bitbucket.org/leomrtns/guenomu/">guenomu</a> still install a global version of this library, but newer programs should use it locally, to avoid version conflicts and since it's smaller than one MB...)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib/.libs/libbiomcmc.a</span>
+<span class="cp">#include</span> <span class="cpf">&lt;biomcmc.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(){</span>
+    <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">6</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">kmer_params</span> <span class="n">kp</span> <span class="o">=</span> <span class="n">new_kmer_params</span> <span class="p">(</span><span class="n">j</span><span class="p">);</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;&lt;&lt;%d&gt;&gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s"> %3d %3d &lt; 1 &gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">kp</span><span class="o">-&gt;</span><span class="n">n2</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s"> %3d %3d &lt; 2 &gt;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">nbytes</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">],</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">size</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="n">kp</span><span class="o">-&gt;</span><span class="n">n1</span><span class="p">]);</span>
+        <span class="n">del_kmer_params</span> <span class="p">(</span><span class="n">kp</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>&lt;&lt;0&gt;&gt;
+	   4  16 &lt; 1 &gt;
+	   8  32 &lt; 1 &gt;
+&lt;&lt;1&gt;&gt;
+	   2   8 &lt; 1 &gt;
+	   4  16 &lt; 1 &gt;
+	   6  24 &lt; 1 &gt;
+	   8  32 &lt; 1 &gt;
+	  12  48 &lt; 2 &gt;
+	  16  64 &lt; 2 &gt;
+&lt;&lt;2&gt;&gt;
+	   2   4 &lt; 1 &gt;
+	   3   6 &lt; 1 &gt;
+	   4   8 &lt; 1 &gt;
+	   6  12 &lt; 1 &gt;
+	   8  16 &lt; 1 &gt;
+	  10  20 &lt; 2 &gt;
+	  12  24 &lt; 2 &gt;
+	  16  32 &lt; 2 &gt;
+&lt;&lt;3&gt;&gt;
+	   2   8 &lt; 1 &gt;
+	   3  12 &lt; 1 &gt;
+	   4  16 &lt; 1 &gt;
+	   5  20 &lt; 1 &gt;
+	   6  24 &lt; 1 &gt;
+	   7  28 &lt; 1 &gt;
+	   8  32 &lt; 1 &gt;
+&lt;&lt;4&gt;&gt;
+	   2   4 &lt; 1 &gt;
+	   3   6 &lt; 1 &gt;
+	   4   8 &lt; 1 &gt;
+	   5  10 &lt; 1 &gt;
+	   6  12 &lt; 1 &gt;
+	   7  14 &lt; 1 &gt;
+	   8  16 &lt; 1 &gt;
+	  10  20 &lt; 2 &gt;
+	  11  22 &lt; 2 &gt;
+	  12  24 &lt; 2 &gt;
+	  16  32 &lt; 2 &gt;
+&lt;&lt;5&gt;&gt;
+	   4  32 &lt; 1 &gt;
+	   8  64 &lt; 1 &gt;
+	  12  96 &lt; 2 &gt;
+	  16 128 &lt; 2 &gt;
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>biomcmc-lib commit: <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a></p>
+
+</div>
+</div>
+</div>
+<hr>
+&copy; 2019 Leonardo de Oliveira Martins
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/7944d827dc738ffaf6ad41fbc7c299f0f79cc3d7/Programming/001.kmer.ipynb"><code>Programming/001.kmer.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Fri Nov 29 16:09:17 2019 <a href="https://github.com/leomrtns/notebooks/commit/7944d827dc738ffaf6ad41fbc7c299f0f79cc3d7">revision 1, 7944d82</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+</div>
+</div>
+</body>
+</html>

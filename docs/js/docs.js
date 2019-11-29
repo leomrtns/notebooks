@@ -1,9 +1,9 @@
 var IntroductionArray = []
 var IntroductionDict = {}
 var IntroductionArrayMap = {}
-var CodingArray = ['001.first', '002.second']
-var CodingDict = {'001-first-C-code-1': '001.first', '002-second-C-code-1': '002.second'}
-var CodingArrayMap = {'001.first': '001 first C code', '002.second': '002 second C code'}
+var ProgrammingArray = ['001.kmer', '002.quantile']
+var ProgrammingDict = {'001-K-mer-in-biomcmc-lib-(2019.11.29)-1': '001.kmer', '002-Quantile-functions-implemented-in-biomcmc-lib-1': '002.quantile'}
+var ProgrammingArrayMap = {'001.kmer': '001 K-mer in biomcmc-lib (2019.11.29)', '002.quantile': '002 Quantile functions  ... biomcmc-lib'}
 var PhylogeneticsArray = []
 var PhylogeneticsDict = {}
 var PhylogeneticsArrayMap = {}
