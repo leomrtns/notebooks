@@ -246,14 +246,14 @@ body {
 <h1 id="003-Minimal-example-of-a-rolling-hash">003 Minimal example of a rolling hash<a class="anchor-link" href="#003-Minimal-example-of-a-rolling-hash">&#182;</a></h1><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a>).</p>
 <p>The rolling hash (or expoential hash) is a technique to slide through a sequence while updating its hash value using only information from the current hash and the next value. One of the most popular algorithms is the Rabin-Karp algorithm. Below I start with the imnplementation in <a href="http://dx.doi.org/10.1038/s41467-018-04964-5">linclust/MMseqs2</a></p>
 <p>In DNA context, each base is represented by a random number. In MMseqs they work with a reduced amino acid alphabet of 13 groups</p>
-<h2 id="Prototype">Prototype<a class="anchor-link" href="#Prototype">&#182;</a></h2><p>Here I describe a prototype (future capability of the library), not implemented yet. I am testing the rolling hash function but also shorter types <code>uint8_t</code> etc.</p>
+<h2 id="Prototype">Prototype<a class="anchor-link" href="#Prototype">&#182;</a></h2><p>Here I describe a prototype (future capability of the library), not implemented yet. I am testing the rolling hash function but also shorter types <code>uint8_t</code> etc. Below is a working version that follows closely <code>minclust</code>.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[62]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
@@ -363,17 +363,139 @@ body {
 </div>
 
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib/.libs/libbiomcmc.a</span>
+<span class="cp">#include</span> <span class="cpf">&lt;biomcmc.h&gt;</span><span class="cp"></span>
+
+<span class="kt">uint32_t</span> <span class="n">RAND</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x4567</span><span class="p">,</span> <span class="mh">0x23c6</span><span class="p">,</span> <span class="mh">0x9869</span><span class="p">,</span> <span class="mh">0x4873</span><span class="p">,</span> <span class="mh">0xdc51</span><span class="p">,</span> <span class="mh">0x5cff</span><span class="p">,</span> <span class="mh">0x944a</span><span class="p">,</span> <span class="mh">0x58ec</span><span class="p">,</span>
+                           <span class="mh">0x1f29</span><span class="p">,</span> <span class="mh">0x7ccd</span><span class="p">,</span> <span class="mh">0x58ba</span><span class="p">,</span> <span class="mh">0xd7ab</span><span class="p">,</span> <span class="mh">0x41f2</span><span class="p">,</span> <span class="mh">0x1efb</span><span class="p">,</span> <span class="mh">0xa9e3</span><span class="p">,</span> <span class="mh">0xe146</span><span class="p">,</span>
+                           <span class="mh">0x007c</span><span class="p">,</span> <span class="mh">0x62c2</span><span class="p">,</span> <span class="mh">0x0854</span><span class="p">,</span> <span class="mh">0x27f8</span><span class="p">,</span> <span class="mh">0x231b</span><span class="p">};</span>
+<span class="kt">int32_t</span> <span class="n">rnd_prime_int32</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// size = 64 </span>
+  <span class="mh">0x343EAF9F</span><span class="p">,</span> <span class="mh">0x75BD32B</span><span class="p">,</span>  <span class="mh">0x5E1C5A87</span><span class="p">,</span> <span class="mh">0x343EFDAF</span><span class="p">,</span> <span class="mh">0x1FDCDBEF</span><span class="p">,</span> <span class="mh">0x6389CB</span><span class="p">,</span>   <span class="mh">0x1FDCE507</span><span class="p">,</span> <span class="mh">0x1FDCE3C7</span><span class="p">,</span> 
+  <span class="mh">0x1FDCE15F</span><span class="p">,</span> <span class="mh">0x75BD431</span><span class="p">,</span>  <span class="mh">0x34C8B0F</span><span class="p">,</span>  <span class="mh">0x5397FEF</span><span class="p">,</span>  <span class="mh">0x87413</span><span class="p">,</span>    <span class="mh">0x6389C9</span><span class="p">,</span>   <span class="mh">0x34C8B23</span><span class="p">,</span>  <span class="mh">0x343EFDB5</span><span class="p">,</span> 
+  <span class="mh">0x75BD479</span><span class="p">,</span>  <span class="mh">0x5398013</span><span class="p">,</span>  <span class="mh">0x5397FCD</span><span class="p">,</span>  <span class="mh">0x87407</span><span class="p">,</span>    <span class="mh">0x75BD413</span><span class="p">,</span>  <span class="mh">0x343EAF4B</span><span class="p">,</span> <span class="mh">0x343EB047</span><span class="p">,</span> <span class="mh">0x6389CF</span><span class="p">,</span> 
+  <span class="mh">0x5E1C5A2F</span><span class="p">,</span> <span class="mh">0x343EFD31</span><span class="p">,</span> <span class="mh">0x34C8B59</span><span class="p">,</span>  <span class="mh">0x343EFD57</span><span class="p">,</span> <span class="mh">0x1FDCDC19</span><span class="p">,</span> <span class="mh">0x5E1C5B0D</span><span class="p">,</span> <span class="mh">0x34C8B5D</span><span class="p">,</span>  <span class="mh">0x343EB035</span><span class="p">,</span> 
+  <span class="mh">0x75BD307</span><span class="p">,</span>  <span class="mh">0x343EAF7B</span><span class="p">,</span> <span class="mh">0x343EAEF5</span><span class="p">,</span> <span class="mh">0x75BD433</span><span class="p">,</span>  <span class="mh">0x1FDCDBD5</span><span class="p">,</span> <span class="mh">0x1FDCE3B7</span><span class="p">,</span> <span class="mh">0x343EFD19</span><span class="p">,</span> <span class="mh">0x5398057</span><span class="p">,</span> 
+  <span class="mh">0x34C8B51</span><span class="p">,</span>  <span class="mh">0x638971</span><span class="p">,</span>   <span class="mh">0x1FDCE16F</span><span class="p">,</span> <span class="mh">0x63896F</span><span class="p">,</span>   <span class="mh">0x343EB04D</span><span class="p">,</span> <span class="mh">0x873FD</span><span class="p">,</span>    <span class="mh">0x63896B</span><span class="p">,</span>   <span class="mh">0x1FDCDC9B</span><span class="p">,</span> 
+  <span class="mh">0x5E1C5B1F</span><span class="p">,</span> <span class="mh">0x343EFCEB</span><span class="p">,</span> <span class="mh">0x5398007</span><span class="p">,</span>  <span class="mh">0x1FDCE51F</span><span class="p">,</span> <span class="mh">0x63897B</span><span class="p">,</span>   <span class="mh">0x5E1C5B17</span><span class="p">,</span> <span class="mh">0x5E1C5ABD</span><span class="p">,</span> <span class="mh">0xFF85</span><span class="p">,</span> 
+  <span class="mh">0x1FDCDC25</span><span class="p">,</span> <span class="mh">0x873EB</span><span class="p">,</span>    <span class="mh">0x5E1C5AB1</span><span class="p">,</span> <span class="mh">0x75BD30D</span><span class="p">,</span>  <span class="mh">0x1FDCDCC1</span><span class="p">,</span> <span class="mh">0xFF8B</span><span class="p">,</span>     <span class="mh">0x5397FC1</span><span class="p">,</span>  <span class="mh">0x5398001</span><span class="p">};</span>
+
+<span class="cp">#define RoL(val, numbits) (val &lt;&lt; numbits) ^ (val &gt;&gt; (32 - numbits))</span>
+<span class="kt">uint32_t</span> <span class="nf">circ_hash</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">){</span>
+    <span class="kt">uint32_t</span> <span class="n">h</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">;</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">^</span> <span class="n">RAND</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>                  <span class="c1">// XOR h and ki</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">length</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">RoL</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span>
+        <span class="n">h</span> <span class="o">^=</span> <span class="n">RAND</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>                 <span class="c1">// XOR h and ki</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">h</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">uint32_t</span> <span class="nf">circ_hash_next</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">x_first</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">h</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">){</span>
+    <span class="c1">// undo INITIAL_VALUE and first letter x[0] of old key</span>
+    <span class="n">h</span> <span class="o">^=</span> <span class="n">RoL</span><span class="p">(</span><span class="n">RAND</span><span class="p">[</span><span class="n">x_first</span><span class="p">],</span> <span class="p">(</span><span class="n">rol</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">%</span> <span class="mi">32</span><span class="p">);</span><span class="c1">// circularly permute all letters x[1:length-1] to 5 positions to left</span>
+    <span class="c1">//h ^= RoL(RAND[x_first], (rol * (length-1)) &amp; 31U); // since x%y = x &amp; (y-1)</span>
+    <span class="n">h</span> <span class="o">=</span>  <span class="n">RoL</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span><span class="c1">// add new, last letter of new key x[1:length]</span>
+    <span class="n">h</span> <span class="o">^=</span> <span class="n">RAND</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">]];</span>
+    <span class="k">return</span> <span class="n">h</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span> <span class="p">(){</span>
+    <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">my_seq1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">};</span> <span class="c1">// n=28</span>
+    <span class="kt">uint8_t</span> <span class="n">my_seq2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">};</span> 
+    <span class="kt">uint32_t</span> <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">25</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%3d &gt;&gt;  &quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot; %8u  </span><span class="se">\t</span><span class="s"> &gt;&gt;  &quot;</span><span class="p">,</span><span class="n">my_h1</span><span class="p">);</span> <span class="c1">// show current kmer and hash</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%8u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">my_h2</span><span class="p">);</span> <span class="c1">// show current kmer and hash</span>
+        <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h1</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+        <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h2</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  0 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  1 2 3 	146668787
+  1 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  2 3 4 	641639889
+  2 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  3 4 5 	309507199
+  3 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  4 5 2 	926590953
+  4 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  5 2 3 	393460979
+  5 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  2 3 4 	641639889
+  6 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  3 4 5 	309507199
+  7 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  4 5 2 	926590953
+  8 &gt;&gt;  3 1 1  19240710  	 &gt;&gt;  5 2 3 	393460979
+  9 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  2 3 4 	641639889
+ 10 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  3 4 5 	309507199
+ 11 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  4 5 1 	926555206
+ 12 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  5 1 1 	388890822
+ 13 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  1 1 4 	148946769
+ 14 &gt;&gt;  1 1 2   9173161  	 &gt;&gt;  1 4 5 	144700543
+ 15 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  4 5 2 	926590953
+ 16 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  5 2 5 	393455743
+ 17 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  2 5 2 	640985065
+ 18 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  5 2 3 	393460979
+ 19 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  2 3 4 	641639889
+ 20 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 4 3 	309502195
+ 21 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  4 3 2 	925950441
+ 22 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 2 3 	307281139
+ 23 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  2 3 2 	641655273
+ 24 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 2 3 	307281139
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="conclusions">conclusions<a class="anchor-link" href="#conclusions">&#182;</a></h2><p>For some reason, the hash can't work with 32 bits, it has to be 16 bits. Which, as we can see, is very prone to collisions. Therefore a potential solution is to create two rolling hashes and then merge tehm into 32 bits.</p>
+<h2 id="conclusions">conclusions<a class="anchor-link" href="#conclusions">&#182;</a></h2><p><code>linclust</code> may have a "bug" since a five is hardcoded instead of <code>rol</code> in <code>RoL(RAND[x_first], (5*(length-1)) % 16);</code></p>
 
 </div>
 </div>
 </div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
 <hr>
 &copy; 2019 Leonardo de Oliveira Martins
-<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/4212db12ca9c440feb6f91e36ceb4418caa59c7e/Programming/003.rollinghash.ipynb"><code>Programming/003.rollinghash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Mon Dec 2 17:24:29 2019 <a href="https://github.com/leomrtns/notebooks/commit/4212db12ca9c440feb6f91e36ceb4418caa59c7e">revision 1, 4212db1</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/89efe1ef0e22ec89968c99fc86aa3a4061432806/Programming/003.rollinghash.ipynb"><code>Programming/003.rollinghash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Mon Dec 2 17:57:02 2019 <a href="https://github.com/leomrtns/notebooks/commit/89efe1ef0e22ec89968c99fc86aa3a4061432806">revision 2, 89efe1e</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
 </div>
 </div>
 </body>
