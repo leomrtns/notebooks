@@ -254,7 +254,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
@@ -367,7 +367,7 @@ body {
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
@@ -405,16 +405,16 @@ body {
     <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
     <span class="kt">uint8_t</span> <span class="n">my_seq1</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">};</span> <span class="c1">// n=28</span>
     <span class="kt">uint8_t</span> <span class="n">my_seq2</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">};</span> 
-    <span class="kt">uint32_t</span> <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-    <span class="kt">uint32_t</span> <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash</span><span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
     <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">25</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
         <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%3d &gt;&gt;  &quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">4</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
         <span class="n">printf</span> <span class="p">(</span><span class="s">&quot; %8u  </span><span class="se">\t</span><span class="s"> &gt;&gt;  &quot;</span><span class="p">,</span><span class="n">my_h1</span><span class="p">);</span> <span class="c1">// show current kmer and hash</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">3</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="o">+</span><span class="mi">4</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%d &quot;</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
         <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">%8u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">my_h2</span><span class="p">);</span> <span class="c1">// show current kmer and hash</span>
-        <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h1</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
-        <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h2</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
+        <span class="n">my_h1</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq1</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">my_seq1</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h1</span><span class="p">,</span> <span class="mi">5</span><span class="p">);</span>
+        <span class="n">my_h2</span> <span class="o">=</span> <span class="n">circ_hash_next</span> <span class="p">((</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="p">)</span> <span class="n">my_seq2</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">my_seq2</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">my_h2</span><span class="p">,</span> <span class="mi">7</span><span class="p">);</span>
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -433,35 +433,52 @@ body {
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>  0 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  1 2 3 	146668787
-  1 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  2 3 4 	641639889
-  2 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  3 4 5 	309507199
-  3 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  4 5 2 	926590953
-  4 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  5 2 3 	393460979
-  5 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  2 3 4 	641639889
-  6 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  3 4 5 	309507199
-  7 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  4 5 2 	926590953
-  8 &gt;&gt;  3 1 1  19240710  	 &gt;&gt;  5 2 3 	393460979
-  9 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  2 3 4 	641639889
- 10 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  3 4 5 	309507199
- 11 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  4 5 1 	926555206
- 12 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  5 1 1 	388890822
- 13 &gt;&gt;  1 1 1   9126662  	 &gt;&gt;  1 1 4 	148946769
- 14 &gt;&gt;  1 1 2   9173161  	 &gt;&gt;  1 4 5 	144700543
- 15 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  4 5 2 	926590953
- 16 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  5 2 5 	393455743
- 17 &gt;&gt;  1 2 3  10247507  	 &gt;&gt;  2 5 2 	640985065
- 18 &gt;&gt;  2 3 1  40405414  	 &gt;&gt;  5 2 3 	393460979
- 19 &gt;&gt;  3 1 2  19213481  	 &gt;&gt;  2 3 4 	641639889
- 20 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 4 3 	309502195
- 21 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  4 3 2 	925950441
- 22 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 2 3 	307281139
- 23 &gt;&gt;  2 1 2  40191145  	 &gt;&gt;  2 3 2 	641655273
- 24 &gt;&gt;  1 2 1  10237670  	 &gt;&gt;  3 2 3 	307281139
+<pre>  0 &gt;&gt;  1 2 3 1  327911846  	 &gt;&gt;  1 2 3 4 	1593746901
+  1 &gt;&gt;  2 3 1 2  1293003945  	 &gt;&gt;  2 3 4 5 	525513836
+  2 &gt;&gt;  3 1 2 3  614849875  	 &gt;&gt;  3 4 5 2 	962242528
+  3 &gt;&gt;  1 2 3 1  327911846  	 &gt;&gt;  4 5 2 3 	2639510760
+  4 &gt;&gt;  2 3 1 2  1293003945  	 &gt;&gt;  5 2 3 4 	3118376410
+  5 &gt;&gt;  3 1 2 3  614849875  	 &gt;&gt;  2 3 4 5 	525513836
+  6 &gt;&gt;  1 2 3 1  327911846  	 &gt;&gt;  3 4 5 2 	962242528
+  7 &gt;&gt;  2 3 1 1  1292965638  	 &gt;&gt;  4 5 2 3 	2639510760
+  8 &gt;&gt;  3 1 1 1  615695110  	 &gt;&gt;  5 2 3 4 	3118376410
+  9 &gt;&gt;  1 1 1 1  292045574  	 &gt;&gt;  2 3 4 5 	525513836
+ 10 &gt;&gt;  1 1 1 1  292045574  	 &gt;&gt;  3 4 5 1 	962206799
+ 11 &gt;&gt;  1 1 1 1  292045574  	 &gt;&gt;  4 5 1 1 	2634940637
+ 12 &gt;&gt;  1 1 1 1  292045574  	 &gt;&gt;  5 1 1 4 	2533408602
+ 13 &gt;&gt;  1 1 1 2  292092073  	 &gt;&gt;  1 1 4 5 	1885336699
+ 14 &gt;&gt;  1 1 2 1  293549798  	 &gt;&gt;  1 4 5 2 	1341827053
+ 15 &gt;&gt;  1 2 1 2  327566505  	 &gt;&gt;  4 5 2 5 	2639505508
+ 16 &gt;&gt;  2 1 2 3  1286135123  	 &gt;&gt;  5 2 5 2 	3117721570
+ 17 &gt;&gt;  1 2 3 1  327911846  	 &gt;&gt;  2 5 2 3 	441695456
+ 18 &gt;&gt;  2 3 1 2  1293003945  	 &gt;&gt;  5 2 3 4 	3118376410
+ 19 &gt;&gt;  3 1 2 1  614840038  	 &gt;&gt;  2 3 4 3 	525508832
+ 20 &gt;&gt;  1 2 1 2  327566505  	 &gt;&gt;  3 4 3 2 	961602016
+ 21 &gt;&gt;  2 1 2 1  1286125286  	 &gt;&gt;  4 3 2 3 	2557525224
+ 22 &gt;&gt;  1 2 1 2  327566505  	 &gt;&gt;  3 2 3 2 	677306848
+ 23 &gt;&gt;  2 1 2 1  1286125286  	 &gt;&gt;  2 3 2 3 	527482080
+ 24 &gt;&gt;  1 2 1 2  327566505  	 &gt;&gt;  3 2 3 2 	677306848
 </pre>
 </div>
 </div>
 
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%16u %16u %16u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">1</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%16d %16d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">31</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">31U</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="mi">32</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mi">31U</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
 </div>
 </div>
 
@@ -489,14 +506,14 @@ body {
 <span class="p">}</span>
 </pre></div>
 <p>It just returns a small number, that is concatenated to form the k-mer. I.e. a sequence <code>ACGGT</code> becomes an integer with binary <code>00 01 10 10 01</code>.</p>
-<p>Below is the tentative code:</p>
+<p>Below is the tentative code, closer to my final implementation (notice that it doesn't compress homopolymers):</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
@@ -504,13 +521,11 @@ body {
 <span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib</span>
 <span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib/.libs/libbiomcmc.a</span>
 <span class="cp">#include</span> <span class="cpf">&lt;biomcmc.h&gt;</span><span class="cp"></span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">dna</span><span class="p">[]</span> <span class="o">=</span> 
-    <span class="s">&quot;AAACCACCTCCTCAATATATCCTAGATGTCATCATCTAAATACTCTAAATGAGATAACAG \</span>
-<span class="s">    GTTCTTAACATTCTCATAGGTTTCTCGTACAGCCACTCGTTTACCATCACTGGTGAAGAT \</span>
-<span class="s">    ACAGGTATTACCTTCGTCAACTGTAATGAATGTAATGTTATTGATATTAAACTCCACTGG \</span>
-<span class="s">    GTTATATAATGGTTGACTGTTTTGTTGATAACATATAGCCCCCTGTATTAGAGGGCTAGG \</span>
-<span class="s">    TTCATTGTTCTGTGTGGGGTTAGTCTCTTCTACATCAGCAGAGGTCTCTTCCTCGTATGC \</span>
-<span class="s">    TTCATACGGTACGTGTTCAGTAACAACAATCAAATTAGGAAACACTACAAGTTGTTCATC&quot;</span><span class="p">;</span>
+<span class="k">const</span> <span class="kt">char</span> <span class="n">my_dna_seq</span><span class="p">[]</span> <span class="o">=</span> 
+    <span class="s">&quot;AAACCACCTCCTCAATATATCCTAGATGTC&quot;</span>
+    <span class="s">&quot;AAACCACCTCCTCAATATATCCTAGATGTC&quot;</span>
+    <span class="s">&quot;GTTCTTAACATTCTCATAGGTTTCTCGTAC&quot;</span>
+    <span class="s">&quot;GTTCTTAACATTCTCATAGGTTTCTCGTAC&quot;</span><span class="p">;</span>
 
 <span class="kt">uint32_t</span> <span class="n">rand_hash_list</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="mh">0x4567</span><span class="p">,</span> <span class="mh">0x23c6</span><span class="p">,</span> <span class="mh">0x9869</span><span class="p">,</span> <span class="mh">0x4873</span><span class="p">,</span> <span class="mh">0xdc51</span><span class="p">};</span> <span class="c1">// size = 5</span>
 <span class="kt">uint32_t</span> <span class="n">prime_salt_list</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="c1">// size = 64 </span>
@@ -525,11 +540,12 @@ body {
 
 <span class="kt">uint32_t</span><span class="o">**</span>
 <span class="nf">new_dna_salted_hash_encoding</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">salt</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">uint8_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="n">i</span><span class="o">=</span><span class="mi">255</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
     <span class="kt">uint32_t</span> <span class="o">**</span><span class="n">shash</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">**</span><span class="p">)</span> <span class="n">biomcmc_malloc</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">));</span> <span class="c1">// opposite order as dna_in_2_bits[]</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">shash</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span> <span class="n">biomcmc_malloc</span> <span class="p">(</span><span class="mi">256</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">));</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">shash</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span><span class="p">)</span> <span class="n">biomcmc_malloc</span> <span class="p">(</span><span class="mi">256</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">));</span>
+    <span class="cm">/* notice do{}while() instead of for() since i is always &lt; 256 */</span>
+    <span class="k">do</span> <span class="p">{</span> <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;}</span> <span class="k">while</span> <span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">);</span> <span class="c1">// anything else is fifth state</span>
     
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span><span class="p">;</span> <span class="c1">// anything else treated as fifth state</span>
     <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;A&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;a&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>  <span class="cm">/*  A  &lt;-&gt; T  */</span>
     <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;C&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;C&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;c&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>  <span class="cm">/*  C  &lt;-&gt; G  */</span>
     <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="sc">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;G&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">shash</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="sc">&#39;g&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>  <span class="cm">/*  G  &lt;-&gt; C  */</span>
@@ -538,7 +554,9 @@ body {
     
     <span class="n">salt</span> <span class="o">&amp;=</span> <span class="mi">63</span><span class="p">;</span> <span class="c1">// modulus, we only have 64 salts</span>
     <span class="cm">/** now we transform the indexes for their equiv. hash values; all have same salt */</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="n">shash</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand_hash_list</span><span class="p">[</span><span class="n">shash</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">prime_salt_list</span><span class="p">[</span><span class="n">salt</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">255</span><span class="p">;</span> <span class="k">do</span> <span class="p">{</span> <span class="n">shash</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">rand_hash_list</span><span class="p">[</span><span class="n">shash</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">]]</span> <span class="o">+</span> <span class="n">prime_salt_list</span><span class="p">[</span><span class="n">salt</span><span class="p">];</span> <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">i</span><span class="o">--</span><span class="p">);</span>
+    <span class="p">}</span>
     <span class="k">return</span> <span class="n">shash</span><span class="p">;</span>
 <span class="p">}</span>
 
@@ -550,31 +568,48 @@ body {
     <span class="n">free</span> <span class="p">(</span><span class="n">shash</span><span class="p">);</span>
 <span class="p">}</span>
 
-
 <span class="cp">#define RoL(val, numbits) ((val) &lt;&lt; (numbits)) ^ ((val) &gt;&gt; (32 - (numbits)))</span>
-<span class="c1">// FIXME: code below incomplete </span>
-<span class="kt">uint32_t</span> <span class="nf">circular_hash_start</span> <span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">dna</span><span class="p">,</span> 
-                              <span class="kt">uint8_t</span> <span class="n">kmer_length</span><span class="p">,</span> 
-                              <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">,</span> 
-                              <span class="k">const</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">shashcode</span><span class="p">,</span> <span class="c1">// just one of the two vectors</span>
-                              <span class="k">const</span> <span class="kt">bool</span> <span class="n">homopol_compress</span><span class="p">)</span> <span class="p">{</span>
-    <span class="kt">uint32_t</span> <span class="n">h</span> <span class="o">=</span> <span class="mh">0x0</span><span class="p">;</span> 
-    <span class="n">h</span> <span class="o">=</span> <span class="n">h</span> <span class="o">^</span> <span class="n">shashcode</span><span class="p">[(</span><span class="kt">uint8_t</span><span class="p">)</span><span class="n">dna</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>                  <span class="c1">// XOR h and ki</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">uint8_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">kmer_length</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">){</span>
-        <span class="n">h</span> <span class="o">=</span> <span class="n">RoL</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span>
-        <span class="n">h</span> <span class="o">^=</span> <span class="n">RAND</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>                 <span class="c1">// XOR h and ki</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="n">h</span><span class="p">;</span>
+<span class="kt">void</span>
+<span class="nf">roll_hash_add</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">dna_base</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">shashcode</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="o">*</span><span class="n">h</span> <span class="o">=</span> <span class="n">RoL</span><span class="p">(</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">h</span> <span class="o">^=</span> <span class="n">shashcode</span><span class="p">[(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">dna_base</span><span class="p">];</span> <span class="c1">// XOR h and ki</span>
 <span class="p">}</span>
 
-<span class="kt">uint32_t</span> <span class="nf">circular_hash_next</span> <span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span> <span class="n">x</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">length</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">x_first</span><span class="p">,</span> <span class="kt">uint32_t</span> <span class="n">h</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">){</span>
-    <span class="kt">uint8_t</span> <span class="n">remain</span> <span class="o">=</span> <span class="p">(</span><span class="n">rol</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">31U</span><span class="p">;</span> <span class="c1">// since x % y = x &amp; (y-1)</span>
-    <span class="c1">// undo INITIAL_VALUE and first letter x[0] of old key</span>
-    <span class="c1">//h ^= RoL(RAND[x_first], (rol * (length-1)) % 32);// circularly permute all letters x[1:length-1] to 5 positions to left</span>
-    <span class="n">h</span> <span class="o">^=</span> <span class="n">RoL</span><span class="p">(</span><span class="n">RAND</span><span class="p">[</span><span class="n">x_first</span><span class="p">],</span> <span class="n">remain</span><span class="p">);</span>
-    <span class="n">h</span> <span class="o">=</span>  <span class="n">RoL</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span><span class="c1">// add new, last letter of new key x[1:length]</span>
-    <span class="n">h</span> <span class="o">^=</span> <span class="n">RAND</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">length</span><span class="o">-</span><span class="mi">1</span><span class="p">]];</span>
-    <span class="k">return</span> <span class="n">h</span><span class="p">;</span>
+<span class="kt">void</span> <span class="c1">// kmer_size can&#39;t be 0 or 32 </span>
+<span class="n">roll_hash_replace</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">old_base</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="n">new_base</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">kmer_size</span><span class="p">,</span> 
+                   <span class="k">const</span> <span class="kt">uint8_t</span> <span class="n">rol</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">shashcode</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">uint8_t</span> <span class="n">remain</span> <span class="o">=</span> <span class="p">(</span><span class="n">rol</span> <span class="o">*</span> <span class="p">(</span><span class="n">kmer_size</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">&amp;</span> <span class="mi">31U</span><span class="p">;</span> <span class="c1">// since x % y = x &amp; (y-1) // this can be calculated outside</span>
+  <span class="o">*</span><span class="n">h</span> <span class="o">^=</span> <span class="n">RoL</span><span class="p">(</span><span class="n">shashcode</span><span class="p">[(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">old_base</span><span class="p">],</span> <span class="n">remain</span><span class="p">);</span> <span class="c1">// remove &quot;leftmost&quot; base </span>
+  <span class="o">*</span><span class="n">h</span> <span class="o">=</span>  <span class="n">RoL</span><span class="p">(</span><span class="o">*</span><span class="n">h</span><span class="p">,</span> <span class="n">rol</span><span class="p">);</span>
+  <span class="o">*</span><span class="n">h</span> <span class="o">^=</span> <span class="n">shashcode</span><span class="p">[(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">new_base</span><span class="p">];</span>
+<span class="p">}</span>
+
+<span class="cp">#undef RoL</span>
+
+<span class="kt">int</span> <span class="n">main</span> <span class="p">(){</span>
+    <span class="kt">uint8_t</span> <span class="n">kmer_size</span> <span class="o">=</span> <span class="mi">7</span><span class="p">,</span> <span class="n">rol</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">seqlen</span> <span class="o">=</span> <span class="n">strlen</span> <span class="p">(</span><span class="n">my_dna_seq</span><span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="o">**</span><span class="n">shcode1</span><span class="p">,</span> <span class="o">**</span><span class="n">shcode2</span><span class="p">;</span>
+    <span class="n">shcode1</span> <span class="o">=</span> <span class="n">new_dna_salted_hash_encoding</span> <span class="p">(</span><span class="mi">3</span><span class="p">);</span>
+    <span class="n">shcode2</span> <span class="o">=</span> <span class="n">new_dna_salted_hash_encoding</span> <span class="p">(</span><span class="mi">6</span><span class="p">);</span>
+    <span class="n">h1</span> <span class="o">=</span> <span class="n">shcode1</span><span class="p">[</span><span class="mi">0</span><span class="p">][(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>
+    <span class="n">h2</span> <span class="o">=</span> <span class="n">shcode2</span><span class="p">[</span><span class="mi">0</span><span class="p">][(</span><span class="kt">uint8_t</span><span class="p">)</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="mi">0</span><span class="p">]];</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">kmer_size</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="n">roll_hash_add</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">h1</span><span class="p">,</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">rol</span><span class="p">,</span> <span class="n">shcode1</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">kmer_size</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="n">roll_hash_add</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">h2</span><span class="p">,</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">rol</span><span class="p">,</span> <span class="n">shcode2</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+
+    <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="p">(</span><span class="kt">size_t</span><span class="p">)</span> <span class="n">kmer_size</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">seqlen</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%3lu &gt;&gt;  &quot;</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="n">j</span> <span class="o">-</span> <span class="p">(</span><span class="kt">size_t</span><span class="p">)</span> <span class="n">kmer_size</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">j</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%c &quot;</span><span class="p">,</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> 
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot; &gt;&gt; %12u &gt;&gt; %12u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">h1</span><span class="p">,</span> <span class="n">h2</span><span class="p">);</span> 
+        <span class="n">roll_hash_replace</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">h1</span><span class="p">,</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="n">kmer_size</span><span class="p">],</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">kmer_size</span><span class="p">,</span> <span class="n">rol</span><span class="p">,</span> <span class="n">shcode1</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> 
+        <span class="n">roll_hash_replace</span> <span class="p">(</span><span class="o">&amp;</span><span class="n">h2</span><span class="p">,</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="n">kmer_size</span><span class="p">],</span> <span class="n">my_dna_seq</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">kmer_size</span><span class="p">,</span> <span class="n">rol</span><span class="p">,</span> <span class="n">shcode2</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span> 
+    <span class="p">}</span>
+    <span class="n">del_dna_salted_hash_encoding</span> <span class="p">(</span><span class="n">shcode1</span><span class="p">);</span>
+    <span class="n">del_dna_salted_hash_encoding</span> <span class="p">(</span><span class="n">shcode2</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -591,24 +626,121 @@ body {
     <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>/tmp/tmpwprnos3t.c: In function ‘circular_hash_start’:
-/tmp/tmpwprnos3t.c:64:14: error: ‘RAND’ undeclared (first use in this function); did you mean ‘NAN’?
-         h ^= RAND[x[i]];                 // XOR h and ki
-              ^~~~
-              NAN
-/tmp/tmpwprnos3t.c:64:14: note: each undeclared identifier is reported only once for each function it appears in
-/tmp/tmpwprnos3t.c:64:19: error: ‘x’ undeclared (first use in this function)
-         h ^= RAND[x[i]];                 // XOR h and ki
-                   ^
-/tmp/tmpwprnos3t.c: In function ‘circular_hash_next’:
-/tmp/tmpwprnos3t.c:73:14: error: ‘RAND’ undeclared (first use in this function); did you mean ‘NAN’?
-     h ^= RoL(RAND[x_first], remain);
-              ^
-/tmp/tmpwprnos3t.c:53:29: note: in definition of macro ‘RoL’
- #define RoL(val, numbits) ((val) &lt;&lt; (numbits)) ^ ((val) &gt;&gt; (32 - (numbits)))
-                             ^~~
-[C kernel] GCC exited with code 1, the executable will not be executed</pre>
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>  7 &gt;&gt;  A A A C C A C  &gt;&gt;   1340924107 &gt;&gt;   3910464386
+  8 &gt;&gt;  A A C C A C C  &gt;&gt;   1750671533 &gt;&gt;   3282709472
+  9 &gt;&gt;  A C C A C C T  &gt;&gt;   2665564990 &gt;&gt;   2490434066
+ 10 &gt;&gt;  C C A C C T C  &gt;&gt;   1240227351 &gt;&gt;   1863588335
+ 11 &gt;&gt;  C A C C T C C  &gt;&gt;   2823678005 &gt;&gt;     62288712
+ 12 &gt;&gt;  A C C T C C T  &gt;&gt;   2625325886 &gt;&gt;   2549809682
+ 13 &gt;&gt;  C C T C C T C  &gt;&gt;    447503895 &gt;&gt;    508828143
+ 14 &gt;&gt;  C T C C T C A  &gt;&gt;   3226307164 &gt;&gt;    733368805
+ 15 &gt;&gt;  T C C T C A A  &gt;&gt;   2625045287 &gt;&gt;   2550091939
+ 16 &gt;&gt;  C C T C A A T  &gt;&gt;    455414720 &gt;&gt;    517886680
+ 17 &gt;&gt;  C T C A A T A  &gt;&gt;   4049875132 &gt;&gt;    989804293
+ 18 &gt;&gt;  T C A A T A T  &gt;&gt;   3108002325 &gt;&gt;   3201534901
+ 19 &gt;&gt;  C A A T A T A  &gt;&gt;   3184406704 &gt;&gt;    994391817
+ 20 &gt;&gt;  A A T A T A T  &gt;&gt;    738220956 &gt;&gt;   2308147765
+ 21 &gt;&gt;  A T A T A T C  &gt;&gt;    365840961 &gt;&gt;   3544521996
+ 22 &gt;&gt;  T A T A T C C  &gt;&gt;    739013094 &gt;&gt;   2308438567
+ 23 &gt;&gt;  A T A T C C T  &gt;&gt;    340478966 &gt;&gt;   3553296987
+ 24 &gt;&gt;  T A T C C T A  &gt;&gt;    481043813 &gt;&gt;   2555654756
+ 25 &gt;&gt;  A T C C T A G  &gt;&gt;      4262826 &gt;&gt;   3954334259
+ 26 &gt;&gt;  T C C T A G A  &gt;&gt;   2648977127 &gt;&gt;   2541698915
+ 27 &gt;&gt;  C C T A G A T  &gt;&gt;    692104128 &gt;&gt;    248752856
+ 28 &gt;&gt;  C T A G A T G  &gt;&gt;   3184780724 &gt;&gt;    994074649
+ 29 &gt;&gt;  T A G A T G T  &gt;&gt;    800783132 &gt;&gt;   2302240821
+ 30 &gt;&gt;  A G A T G T C  &gt;&gt;   1654289377 &gt;&gt;   3323553196
+ 31 &gt;&gt;  G A T G T C A  &gt;&gt;   3331008395 &gt;&gt;    572050566
+ 32 &gt;&gt;  A T G T C A A  &gt;&gt;   1151795887 &gt;&gt;   2721009962
+ 33 &gt;&gt;  T G T C A A A  &gt;&gt;     19205711 &gt;&gt;   2766036042
+ 34 &gt;&gt;  G T C A A A C  &gt;&gt;   2976176516 &gt;&gt;   2063592009
+ 35 &gt;&gt;  T C A A A C C  &gt;&gt;   3109593378 &gt;&gt;   3201018466
+ 36 &gt;&gt;  C A A A C C A  &gt;&gt;   3201390160 &gt;&gt;    943787497
+ 37 &gt;&gt;  A A A C C A C  &gt;&gt;   1340924107 &gt;&gt;   3910464386
+ 38 &gt;&gt;  A A C C A C C  &gt;&gt;   1750671533 &gt;&gt;   3282709472
+ 39 &gt;&gt;  A C C A C C T  &gt;&gt;   2665564990 &gt;&gt;   2490434066
+ 40 &gt;&gt;  C C A C C T C  &gt;&gt;   1240227351 &gt;&gt;   1863588335
+ 41 &gt;&gt;  C A C C T C C  &gt;&gt;   2823678005 &gt;&gt;     62288712
+ 42 &gt;&gt;  A C C T C C T  &gt;&gt;   2625325886 &gt;&gt;   2549809682
+ 43 &gt;&gt;  C C T C C T C  &gt;&gt;    447503895 &gt;&gt;    508828143
+ 44 &gt;&gt;  C T C C T C A  &gt;&gt;   3226307164 &gt;&gt;    733368805
+ 45 &gt;&gt;  T C C T C A A  &gt;&gt;   2625045287 &gt;&gt;   2550091939
+ 46 &gt;&gt;  C C T C A A T  &gt;&gt;    455414720 &gt;&gt;    517886680
+ 47 &gt;&gt;  C T C A A T A  &gt;&gt;   4049875132 &gt;&gt;    989804293
+ 48 &gt;&gt;  T C A A T A T  &gt;&gt;   3108002325 &gt;&gt;   3201534901
+ 49 &gt;&gt;  C A A T A T A  &gt;&gt;   3184406704 &gt;&gt;    994391817
+ 50 &gt;&gt;  A A T A T A T  &gt;&gt;    738220956 &gt;&gt;   2308147765
+ 51 &gt;&gt;  A T A T A T C  &gt;&gt;    365840961 &gt;&gt;   3544521996
+ 52 &gt;&gt;  T A T A T C C  &gt;&gt;    739013094 &gt;&gt;   2308438567
+ 53 &gt;&gt;  A T A T C C T  &gt;&gt;    340478966 &gt;&gt;   3553296987
+ 54 &gt;&gt;  T A T C C T A  &gt;&gt;    481043813 &gt;&gt;   2555654756
+ 55 &gt;&gt;  A T C C T A G  &gt;&gt;      4262826 &gt;&gt;   3954334259
+ 56 &gt;&gt;  T C C T A G A  &gt;&gt;   2648977127 &gt;&gt;   2541698915
+ 57 &gt;&gt;  C C T A G A T  &gt;&gt;    692104128 &gt;&gt;    248752856
+ 58 &gt;&gt;  C T A G A T G  &gt;&gt;   3184780724 &gt;&gt;    994074649
+ 59 &gt;&gt;  T A G A T G T  &gt;&gt;    800783132 &gt;&gt;   2302240821
+ 60 &gt;&gt;  A G A T G T C  &gt;&gt;   1654289377 &gt;&gt;   3323553196
+ 61 &gt;&gt;  G A T G T C G  &gt;&gt;   3331060357 &gt;&gt;    572038040
+ 62 &gt;&gt;  A T G T C G T  &gt;&gt;   1153279579 &gt;&gt;   2720380414
+ 63 &gt;&gt;  T G T C G T T  &gt;&gt;     40998395 &gt;&gt;   2776809950
+ 64 &gt;&gt;  G T C G T T C  &gt;&gt;   3690442500 &gt;&gt;   1366055113
+ 65 &gt;&gt;  T C G T T C T  &gt;&gt;   3946190456 &gt;&gt;   3434995664
+ 66 &gt;&gt;  C G T T C T T  &gt;&gt;   4077369390 &gt;&gt;   1989131443
+ 67 &gt;&gt;  G T T C T T A  &gt;&gt;   4113648993 &gt;&gt;    818084456
+ 68 &gt;&gt;  T T C T T A A  &gt;&gt;    870997993 &gt;&gt;   4184444136
+ 69 &gt;&gt;  T C T T A A C  &gt;&gt;   3901680962 &gt;&gt;   3422944770
+ 70 &gt;&gt;  C T T A A C A  &gt;&gt;   2216221274 &gt;&gt;   1636532711
+ 71 &gt;&gt;  T T A A C A T  &gt;&gt;    383583963 &gt;&gt;   3494205438
+ 72 &gt;&gt;  T A A C A T T  &gt;&gt;   1315286097 &gt;&gt;   3919493488
+ 73 &gt;&gt;  A A C A T T C  &gt;&gt;   1500551757 &gt;&gt;   3538111744
+ 74 &gt;&gt;  A C A T T C T  &gt;&gt;   3151370040 &gt;&gt;   3177045520
+ 75 &gt;&gt;  C A T T C T C  &gt;&gt;   4010270419 &gt;&gt;   1250924970
+ 76 &gt;&gt;  A T T C T C A  &gt;&gt;   1966969538 &gt;&gt;   2965789007
+ 77 &gt;&gt;  T T C T C A T  &gt;&gt;    846661341 &gt;&gt;   4194260988
+ 78 &gt;&gt;  T C T C A T A  &gt;&gt;   3676678561 &gt;&gt;   3739139617
+ 79 &gt;&gt;  C T C A T A G  &gt;&gt;   4050686770 &gt;&gt;    988009115
+ 80 &gt;&gt;  T C A T A G G  &gt;&gt;   3151297519 &gt;&gt;   3176097919
+ 81 &gt;&gt;  C A T A G G T  &gt;&gt;   4015655620 &gt;&gt;   1222199645
+ 82 &gt;&gt;  A T A G G T T  &gt;&gt;   2122781974 &gt;&gt;   4196155579
+ 83 &gt;&gt;  T A G G T T T  &gt;&gt;   1160248412 &gt;&gt;   2730256757
+ 84 &gt;&gt;  A G G T T T C  &gt;&gt;    825924588 &gt;&gt;   3065597353
+ 85 &gt;&gt;  G G T T T C T  &gt;&gt;   2996183829 &gt;&gt;    907922236
+ 86 &gt;&gt;  G T T T C T C  &gt;&gt;   3339186946 &gt;&gt;    579830987
+ 87 &gt;&gt;  T T T C T C G  &gt;&gt;   1966950017 &gt;&gt;   2965770132
+ 88 &gt;&gt;  T T C T C G T  &gt;&gt;    846047005 &gt;&gt;   4193629244
+ 89 &gt;&gt;  T C T C G T A  &gt;&gt;   3631321505 &gt;&gt;   3749889569
+ 90 &gt;&gt;  C T C G T A C  &gt;&gt;   2616665183 &gt;&gt;    292333350
+ 91 &gt;&gt;  T C G T A C G  &gt;&gt;   3944879682 &gt;&gt;   3433160666
+ 92 &gt;&gt;  C G T A C G T  &gt;&gt;   4052205422 &gt;&gt;   1963965939
+ 93 &gt;&gt;  G T A C G T T  &gt;&gt;   2771492949 &gt;&gt;   1086510460
+ 94 &gt;&gt;  T A C G T T C  &gt;&gt;    871865088 &gt;&gt;   4184624325
+ 95 &gt;&gt;  A C G T T C T  &gt;&gt;   3946190645 &gt;&gt;   3434995221
+ 96 &gt;&gt;  C G T T C T T  &gt;&gt;   4077369390 &gt;&gt;   1989131443
+ 97 &gt;&gt;  G T T C T T A  &gt;&gt;   4113648993 &gt;&gt;    818084456
+ 98 &gt;&gt;  T T C T T A A  &gt;&gt;    870997993 &gt;&gt;   4184444136
+ 99 &gt;&gt;  T C T T A A C  &gt;&gt;   3901680962 &gt;&gt;   3422944770
+100 &gt;&gt;  C T T A A C A  &gt;&gt;   2216221274 &gt;&gt;   1636532711
+101 &gt;&gt;  T T A A C A T  &gt;&gt;    383583963 &gt;&gt;   3494205438
+102 &gt;&gt;  T A A C A T T  &gt;&gt;   1315286097 &gt;&gt;   3919493488
+103 &gt;&gt;  A A C A T T C  &gt;&gt;   1500551757 &gt;&gt;   3538111744
+104 &gt;&gt;  A C A T T C T  &gt;&gt;   3151370040 &gt;&gt;   3177045520
+105 &gt;&gt;  C A T T C T C  &gt;&gt;   4010270419 &gt;&gt;   1250924970
+106 &gt;&gt;  A T T C T C A  &gt;&gt;   1966969538 &gt;&gt;   2965789007
+107 &gt;&gt;  T T C T C A T  &gt;&gt;    846661341 &gt;&gt;   4194260988
+108 &gt;&gt;  T C T C A T A  &gt;&gt;   3676678561 &gt;&gt;   3739139617
+109 &gt;&gt;  C T C A T A G  &gt;&gt;   4050686770 &gt;&gt;    988009115
+110 &gt;&gt;  T C A T A G G  &gt;&gt;   3151297519 &gt;&gt;   3176097919
+111 &gt;&gt;  C A T A G G T  &gt;&gt;   4015655620 &gt;&gt;   1222199645
+112 &gt;&gt;  A T A G G T T  &gt;&gt;   2122781974 &gt;&gt;   4196155579
+113 &gt;&gt;  T A G G T T T  &gt;&gt;   1160248412 &gt;&gt;   2730256757
+114 &gt;&gt;  A G G T T T C  &gt;&gt;    825924588 &gt;&gt;   3065597353
+115 &gt;&gt;  G G T T T C T  &gt;&gt;   2996183829 &gt;&gt;    907922236
+116 &gt;&gt;  G T T T C T C  &gt;&gt;   3339186946 &gt;&gt;    579830987
+117 &gt;&gt;  T T T C T C G  &gt;&gt;   1966950017 &gt;&gt;   2965770132
+118 &gt;&gt;  T T C T C G T  &gt;&gt;    846047005 &gt;&gt;   4193629244
+119 &gt;&gt;  T C T C G T A  &gt;&gt;   3631321505 &gt;&gt;   3749889569
+</pre>
 </div>
 </div>
 
@@ -626,7 +758,7 @@ body {
 </div>
 <hr>
 &copy; 2019 Leonardo de Oliveira Martins
-<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/37902e4ea13a4e7d3cc74c5a3bdbc41a2f330329/Programming/003.rollinghash.ipynb"><code>Programming/003.rollinghash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Tue Dec 3 18:17:33 2019 <a href="https://github.com/leomrtns/notebooks/commit/37902e4ea13a4e7d3cc74c5a3bdbc41a2f330329">revision 3, 37902e4</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/c8ebda07cc90cafce1116a986f6774bed273740b/Programming/003.rollinghash.ipynb"><code>Programming/003.rollinghash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Wed Dec 4 16:27:36 2019 <a href="https://github.com/leomrtns/notebooks/commit/c8ebda07cc90cafce1116a986f6774bed273740b">revision 4, c8ebda0</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
 </div>
 </div>
 </body>
