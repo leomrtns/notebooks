@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="ipynb_website:version" content="0.9.7" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<link rel="stylesheet" type="text/css" href="../css/jt.css">
+<link rel="stylesheet" type="text/css" href="../css/flatly.css">
+<link rel="stylesheet" type="text/css" href="../css/toc2.css">
+
+<link href="../site_libs/jqueryui-1.11.4/jquery-ui.css">
+<link rel="stylesheet" href="../site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="../site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="../site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+
+<link rel="stylesheet"
+      href="../site_libs/highlightjs/null.min.css"
+      type="text/css" />
+
+<script src="../site_libs/highlightjs/highlight.pack.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+<script src="../js/doc_toc.js"></script>
+<script src="../js/docs.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+<script>
+    MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true
+        },
+        "HTML-CSS": {
+            preferredFont: "TeX",
+            availableFonts: ["TeX"],
+            styles: {
+                scale: 110,
+                ".MathJax_Display": {
+                    "font-size": "110%",
+                }
+            }
+        }
+    });
+</script>
+<script>
+function filterDataFrame(id) {
+    var input = document.getElementById("search_" + id);
+    var filter = input.value.toUpperCase();
+    var table = document.getElementById("dataframe_" + id);
+    var tr = table.getElementsByTagName("tr");
+    // Loop through all table rows, and hide those who don't match the search query
+    for (var i = 1; i < tr.length; i++) {
+        for (var j = 0; j < tr[i].cells.length; ++j) {
+            var matched = false;
+            if (tr[i].cells[j].innerHTML.toUpperCase().indexOf(filter) != -1) {
+                tr[i].style.display = "";
+                matched = true
+                break;
+            }
+            if (!matched)
+                tr[i].style.display = "none";
+        }
+    }
+}
+function sortDataFrame(id, n, dtype) {
+    var table = document.getElementById("dataframe_" + id);
+    var tb = table.tBodies[0]; // use `<tbody>` to ignore `<thead>` and `<tfoot>` rows
+    var tr = Array.prototype.slice.call(tb.rows, 0); // put rows into array
+    if (dtype === 'numeric') {
+        var fn = function(a, b) { 
+            return parseFloat(a.cells[n].textContent) <= parseFloat(b.cells[n].textContent) ? -1 : 1;
+        }
+    } else {
+        var fn = function(a, b) {
+            var c = a.cells[n].textContent.trim().localeCompare(b.cells[n].textContent.trim()); 
+            return c > 0 ? 1 : (c < 0 ? -1 : 0) }
+    }
+    var isSorted = function(array, fn) {
+        if (array.length < 2)
+            return 1;
+        var direction = fn(array[0], array[1]); 
+        for (var i = 1; i < array.length - 1; ++i) {
+            var d = fn(array[i], array[i+1]);
+            if (d == 0)
+                continue;
+            else if (direction == 0)
+                direction = d;
+            else if (direction != d)
+                return 0;
+            }
+        return direction;
+    }
+    var sorted = isSorted(tr, fn);
+    if (sorted == 1 || sorted == -1) {
+        // if sorted already, reverse it
+        for(var i = tr.length - 1; i >= 0; --i)
+            tb.appendChild(tr[i]); // append each row in order
+    } else {
+        tr = tr.sort(fn);
+        for(var i = 0; i < tr.length; ++i)
+            tb.appendChild(tr[i]); // append each row in order
+    }
+}
+</script>
+
+<script>
+$( document ).ready(function(){
+            var cfg={'threshold':3,     // depth of toc (number of levels)
+             'number_sections': false,
+             'toc_cell': false,          // useless here
+             'toc_window_display': true, // display the toc window
+             "toc_section_display": "block", // display toc contents in the window
+             'sideBar':true,       // sidebar or floating window
+             'navigate_menu':false       // navigation menu (only in liveNotebook -- do not change)
+            }
+            var st={};                  // some variables used in the script
+            st.rendering_toc_cell = false;
+            st.config_loaded = false;
+            st.extension_initialized=false;
+            st.nbcontainer_marginleft = $('#notebook-container').css('margin-left')
+            st.nbcontainer_marginright = $('#notebook-container').css('margin-right')
+            st.nbcontainer_width = $('#notebook-container').css('width')
+            st.oldTocHeight = undefined
+            st.cell_toc = undefined;
+            st.toc_index=0;
+            // fire the main function with these parameters
+            table_of_contents(cfg, st);
+            var file=ProgrammingDict[$("h1:first").attr("id")];
+            $("#toc-level0 a").css("color","#126dce");
+            $('a[href="#'+$("h1:first").attr("id")+'"]').hide()
+            var docs=ProgrammingArray;
+            var docs_map=ProgrammingArrayMap;
+            var pos=ProgrammingArray.indexOf(file);
+            for (var a=pos;a>=0;a--){
+                  $('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>').insertBefore("#toc-level0 li:eq(0)");
+            }
+            $('a[href="'+file+'.html'+'"]').css("color","#126dce");
+            for (var a=pos+1;a<docs.length;a++){
+                  $(".toc #toc-level0").append('<li><a href="'+docs[a]+'.html"><font color="#073642"><b>'+docs_map[docs[a]].replace(/_/g," ")+'</b></font></a></li>');
+            }
+            // $("#toc-header").hide(); // comment out because it prevents search bar from displaying
+    });
+</script>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+  // mark it active
+  menuAnchor.parent().addClass('active');
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+<div class="container-fluid main-container">
+<!-- tabsets -->
+<script src="../site_libs/navigation-1.1/tabsets.js"></script>
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+
+
+<title>Bioinformatics Notebooks</title>
+
+<style type = "text/css">
+body {
+  
+  padding-top: 66px;
+  padding-bottom: 40px;
+}
+</style>
+</head>
+
+<body>
+<div tabindex="-1" id="notebook" class="border-box-sizing">
+<div class="container" id="notebook-container">
+
+<!-- code folding -->
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../index.html">Bioinformatics Notebooks</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        
+<li>
+  <a href="../index.html">Introduction</a>
+</li>
+        
+<li>
+  <a href="../Programming.html">Programming</a>
+</li>
+        
+<li>
+  <a href="../Phylogenetics.html">Phylogenetics</a>
+</li>
+        
+<li>
+  <a href="../License.html">License</a>
+</li>
+        
+      </ul>
+        
+<ul class="nav navbar-nav navbar-right">
+<li>
+   <a href="https://github.com/leomrtns/notebooks"> source </a>
+</li>
+</ul>
+        
+      </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="004-incorporating-kalign3-as-a-library">004 incorporating kalign3 as a library<a class="anchor-link" href="#004-incorporating-kalign3-as-a-library">&#182;</a></h1><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a>).</p>
+<p>Recently I (re-)discovered the <a href="https://github.com/TimoLassmann/kalign">kalign</a> software for multiple sequence alignment by Timo Lassmann, and was happily surprised with the code simplicity and a liberal license (GPL-3.0-or-later).</p>
+<p>Therefore I decided to incorporate its code into a library, that I can access using a <code>char_vector::</code> from the <code>biomcmc-lib</code> library. Currently I am working on a derived library/software called "cumaru" (still private), with a modified version of <code>kalign</code> algorithms.</p>
+<h2 id="Autotools">Autotools<a class="anchor-link" href="#Autotools">&#182;</a></h2><p>First, a digresssion on the configuration aspects of <code>cumaru</code> (or another software importing these libraries).</p>
+<p>This is needed by <code>configure.ac</code> as well as the described files, in order for <code>kalign3</code> to use the AVX extensions.</p>
+<div class="highlight"><pre><span></span><span class="c1"># M4 macros for checking of CPU features from kalign3</span>
+m4_include<span class="o">([</span>m4/ax_gcc_x86_avx_xgetbv.m4<span class="o">])</span>
+m4_include<span class="o">([</span>m4/ax_gcc_x86_cpuid.m4<span class="o">])</span>
+m4_include<span class="o">([</span>m4/ax_check_compile_flag.m4<span class="o">])</span>
+m4_include<span class="o">([</span>m4/ax_ext.m4<span class="o">])</span>
+m4_include<span class="o">([</span>m4/ax_openmp.m4<span class="o">])</span>
+AX_EXT
+</pre></div>
+<p>For importing <code>biomcmc-lib</code>, you have two options:</p>
+<ol>
+<li>downloading the (upstream) software through github, with option <code>--recursive</code> (default for final users of software). This will download <code>biomcmc-lib</code> into <code>${srcdir}/submodules/biomcmc-lib</code>.</li>
+<li>download <code>biomcmc-lib</code> independently into <code>${srcdir}/biomcmc-lib</code> or somewhere else and then link it to there. This is how I do it, since I use the same directory for several projects that rely on it. </li>
+</ol>
+<p>If you opted for (1) above (i.e. you just cloned the repository recursively), then the configuration option below will create a link as in option (2).</p>
+<div class="highlight"><pre><span></span>AC_CHECK_FILE<span class="o">([</span><span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib<span class="o">]</span>,<span class="o">[]</span>,<span class="o">[</span>ln -s submodules/biomcmc-lib <span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib<span class="o">])</span>
+AC_CHECK_FILE<span class="o">([</span><span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib/configure.ac<span class="o">]</span>,<span class="o">[]</span>, <span class="o">[</span>AC_MSG_ERROR<span class="o">([</span><span class="s2">&quot;biomcmc-lib submodule missing, please git clone --recursive or link by hand to location of source code&quot;</span><span class="o">])])</span>
+dnl Call biomcmc-lib ./configure script recursively.
+AC_CONFIG_SUBDIRS<span class="o">([</span>biomcmc-lib<span class="o">])</span>
+AC_SUBST<span class="o">([</span>BIOMCMCLIB<span class="o">]</span>, <span class="o">[</span>biomcmc-lib<span class="o">])</span>
+</pre></div>
+<p>Then the file <code>kalign/Makefile.am</code> has the following information, to create a static local library. This library will encapsulate <code>biomcmc-lib</code> and will be available to the main software as <code>libalign.la</code>:</p>
+<div class="highlight"><pre><span></span><span class="nv">AM_CPPFLAGS</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_CFLAGS<span class="k">)</span>  -I<span class="k">$(</span>srcdir<span class="k">)</span>/../@BIOMCMCLIB@/lib  @OPENMP_CPPFLAGS@ @ZLIB_LIBS@
+<span class="nv">AM_CFLAGS</span> <span class="o">=</span> @SIMD_FLAGS@ @AM_CFLAGS@  @OPENMP_CFLAGS@
+<span class="nv">LDADD</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_LIBS<span class="k">)</span> @ZLIB_LIBS@ ../biomcmc-lib/lib/libbiomcmc.la  <span class="k">$(</span>AM_LDFLAGS<span class="k">)</span>
+
+<span class="nv">common_headers</span> <span class="o">=</span> kalign.h <span class="se">\</span>
+tldevel.h rng.h global.h <span class="se">\</span>
+alignment_parameters.h <span class="se">\</span>
+bisectingKmeans.h <span class="se">\</span>
+sequence_distance.h <span class="se">\</span>
+alignment.h bpm.h
+
+<span class="nv">common_src</span> <span class="o">=</span> run_kalign.c <span class="se">\</span>
+tldevel.c rng.c <span class="se">\</span>
+alignment_parameters.c <span class="se">\</span>
+bisectingKmeans.c <span class="se">\</span>
+sequence_distance.c <span class="se">\</span>
+alignment.c bpm.c
+
+<span class="nv">noinst_LTLIBRARIES</span> <span class="o">=</span> libkalign.la   <span class="c1">## noinst_LT: linked statically (not installed globally)</span>
+<span class="nv">libkalign_la_SOURCES</span> <span class="o">=</span> config.h <span class="k">$(</span>common_headers<span class="k">)</span> <span class="k">$(</span>common_src<span class="k">)</span>
+</pre></div>
+<p>And the <code>src/Makefile.am</code> (with the final software) can be something like:</p>
+<div class="highlight"><pre><span></span><span class="nv">AM_CPPFLAGS</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_CFLAGS<span class="k">)</span> -I<span class="k">$(</span>srcdir<span class="k">)</span>/../kalign -I<span class="k">$(</span>srcdir<span class="k">)</span>/../@BIOMCMCLIB@/lib @OPENMP_CPPFLAGS@  @ZLIB_LIBS@ 
+<span class="nv">AM_CFLAGS</span> <span class="o">=</span> @AM_CFLAGS@ @OPENMP_CFLAGS@ @CHECK_CFLAGS@
+<span class="nv">LDADD</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_LIBS<span class="k">)</span> @CHECK_LIBS@  ../kalign/libkalign.la ../biomcmc-lib/lib/libbiomcmc.la @ZLIB_LIBS@  <span class="k">$(</span>AM_LDFLAGS<span class="k">)</span>
+
+<span class="nv">bin_PROGRAMS</span> <span class="o">=</span> cumaru 
+<span class="nv">cumaru_SOURCES</span> <span class="o">=</span> main.c kseq.h
+<span class="nv">cumaru_LDADD</span> <span class="o">=</span> <span class="k">$(</span>LDADD<span class="k">)</span>
+</pre></div>
+<p>Notice that we need to include the path to the local <code>biomcmc-lib</code> as well, since it is also statically linked.</p>
+<p>The code below is a minimal software that performs multiple sequence alignment from a fasta file (notice that the fasta reading comes from <code>kseq.h</code>). The code does not run, BTW.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags:-lm</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib</span>
+<span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build/biomcmc-lib/lib/.libs/libbiomcmc.a</span>
+<span class="cp">#include</span> <span class="cpf">&lt;kalign.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;kseq.h&quot;</span><span class="cp"></span>
+<span class="n">KSEQ_INIT</span><span class="p">(</span><span class="n">gzFile</span><span class="p">,</span> <span class="n">gzread</span><span class="p">)</span>
+
+<span class="kt">int</span>
+<span class="n">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
+  <span class="kt">clock_t</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">;</span>
+  <span class="n">char_vector</span> <span class="n">seqname</span> <span class="o">=</span> <span class="n">new_char_vector</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">char_vector</span> <span class="n">dna</span> <span class="o">=</span> <span class="n">new_char_vector</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+  <span class="n">char_vector</span> <span class="n">align</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+
+  <span class="n">time0</span> <span class="o">=</span> <span class="n">clock</span> <span class="p">();</span>
+  <span class="n">arg_parameters</span> <span class="n">params</span> <span class="o">=</span> <span class="n">get_parameters_from_argv</span> <span class="p">(</span><span class="n">argc</span><span class="p">,</span> <span class="n">argv</span><span class="p">);</span>
+
+  <span class="n">gzFile</span> <span class="n">fp</span> <span class="o">=</span> <span class="n">gzopen</span><span class="p">((</span><span class="kt">char</span><span class="o">*</span><span class="p">)</span> <span class="n">params</span><span class="p">.</span><span class="n">fasta</span><span class="o">-&gt;</span><span class="n">filename</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s">&quot;r&quot;</span><span class="p">);</span>
+  <span class="n">kseq_t</span> <span class="o">*</span><span class="n">seq</span> <span class="o">=</span> <span class="n">kseq_init</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
+  <span class="k">while</span> <span class="p">((</span><span class="n">i</span> <span class="o">=</span> <span class="n">kseq_read</span><span class="p">(</span><span class="n">seq</span><span class="p">))</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">seqname</span><span class="p">,</span> <span class="n">seq</span><span class="o">-&gt;</span><span class="n">name</span><span class="p">.</span><span class="n">s</span><span class="p">);</span>
+    <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">dna</span><span class="p">,</span> <span class="n">seq</span><span class="o">-&gt;</span><span class="n">seq</span><span class="p">.</span><span class="n">s</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">kseq_destroy</span><span class="p">(</span><span class="n">seq</span><span class="p">);</span>
+  <span class="n">gzclose</span><span class="p">(</span><span class="n">fp</span><span class="p">);</span>
+  <span class="n">time1</span> <span class="o">=</span> <span class="n">clock</span> <span class="p">();</span> <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;read : %lf</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span>  <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">time1</span><span class="o">-</span><span class="n">time0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">CLOCKS_PER_SEC</span><span class="p">));</span> <span class="n">fflush</span><span class="p">(</span><span class="n">stderr</span><span class="p">);</span> 
+
+  <span class="n">align</span> <span class="o">=</span> <span class="n">kalign3_from_char_vector</span> <span class="p">(</span><span class="n">dna</span><span class="p">);</span>
+  <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">align</span><span class="o">-&gt;</span><span class="n">nstrings</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;&gt;%s</span><span class="se">\n</span><span class="s">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">seqname</span><span class="o">-&gt;</span><span class="n">string</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">align</span><span class="o">-&gt;</span><span class="n">string</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+
+  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">dna</span><span class="p">);</span>
+  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">align</span><span class="p">);</span>
+  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">seqname</span><span class="p">);</span>
+  <span class="n">del_arg_parameters</span> <span class="p">(</span><span class="n">params</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/tmp/tmpscuivx3u.c:5:10: fatal error: kalign.h: No such file or directory
+ #include &lt;kalign.h&gt;
+          ^~~~~~~~~~
+compilation terminated.
+[C kernel] GCC exited with code 1, the executable will not be executed</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-c"><pre><span></span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<hr>
+&copy; 2019 Leonardo de Oliveira Martins
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/5768b276d32f8ec0ec466bcd0f1c69d830bb7dc3/Programming/004.kalign3.ipynb"><code>Programming/004.kalign3.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Wed Dec 11 14:32:34 2019 <a href="https://github.com/leomrtns/notebooks/commit/5768b276d32f8ec0ec466bcd0f1c69d830bb7dc3">revision 1, 5768b27</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+</div>
+</div>
+</body>
+</html>
