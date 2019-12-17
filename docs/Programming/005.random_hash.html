@@ -243,113 +243,47 @@ body {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="004-kalign-and-colour-printing">004 kalign and colour printing<a class="anchor-link" href="#004-kalign-and-colour-printing">&#182;</a></h1><h2 id="incorporating-kalign3-as-a-library">incorporating kalign3 as a library<a class="anchor-link" href="#incorporating-kalign3-as-a-library">&#182;</a></h2><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a>).</p>
-<p>Recently I (re-)discovered the <a href="https://github.com/TimoLassmann/kalign">kalign</a> software for multiple sequence alignment by Timo Lassmann, and was happily surprised with the code simplicity and a liberal license (GPL-3.0-or-later).</p>
-<p>Therefore I decided to incorporate its code into a library, that I can access using a <code>char_vector::</code> from the <code>biomcmc-lib</code> library. Currently I am working on a derived library/software called "cumaru" (still private), with a modified version of <code>kalign</code> algorithms.</p>
-<h3 id="Autotools">Autotools<a class="anchor-link" href="#Autotools">&#182;</a></h3><p>First, a digresssion on the configuration aspects of <code>cumaru</code> (or another software importing these libraries).</p>
-<p>This is needed by <code>configure.ac</code> as well as the described files, in order for <code>kalign3</code> to use the AVX extensions.</p>
-<div class="highlight"><pre><span></span><span class="c1"># M4 macros for checking of CPU features from kalign3</span>
-m4_include<span class="o">([</span>m4/ax_gcc_x86_avx_xgetbv.m4<span class="o">])</span>
-m4_include<span class="o">([</span>m4/ax_gcc_x86_cpuid.m4<span class="o">])</span>
-m4_include<span class="o">([</span>m4/ax_check_compile_flag.m4<span class="o">])</span>
-m4_include<span class="o">([</span>m4/ax_ext.m4<span class="o">])</span>
-m4_include<span class="o">([</span>m4/ax_openmp.m4<span class="o">])</span>
-AX_EXT
-</pre></div>
-<p>For importing <code>biomcmc-lib</code>, you have two options:</p>
-<ol>
-<li>downloading the (upstream) software through github, with option <code>--recursive</code> (default for final users of software). This will download <code>biomcmc-lib</code> into <code>${srcdir}/submodules/biomcmc-lib</code>.</li>
-<li>download <code>biomcmc-lib</code> independently into <code>${srcdir}/biomcmc-lib</code> or somewhere else and then link it to there. This is how I do it, since I use the same directory for several projects that rely on it. </li>
-</ol>
-<p>If you opted for (1) above (i.e. you just cloned the repository recursively), then the configuration option below will create a link as in option (2).</p>
-<div class="highlight"><pre><span></span>AC_CHECK_FILE<span class="o">([</span><span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib<span class="o">]</span>,<span class="o">[]</span>,<span class="o">[</span>ln -s submodules/biomcmc-lib <span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib<span class="o">])</span>
-AC_CHECK_FILE<span class="o">([</span><span class="si">${</span><span class="nv">srcdir</span><span class="si">}</span>/biomcmc-lib/configure.ac<span class="o">]</span>,<span class="o">[]</span>, <span class="o">[</span>AC_MSG_ERROR<span class="o">([</span><span class="s2">&quot;biomcmc-lib submodule missing, please git clone --recursive or link by hand to location of source code&quot;</span><span class="o">])])</span>
-dnl Call biomcmc-lib ./configure script recursively.
-AC_CONFIG_SUBDIRS<span class="o">([</span>biomcmc-lib<span class="o">])</span>
-AC_SUBST<span class="o">([</span>BIOMCMCLIB<span class="o">]</span>, <span class="o">[</span>biomcmc-lib<span class="o">])</span>
-</pre></div>
-<p>Then the file <code>kalign/Makefile.am</code> has the following information, to create a static local library. This library will encapsulate <code>biomcmc-lib</code> and will be available to the main software as <code>libalign.la</code>:</p>
-<div class="highlight"><pre><span></span><span class="nv">AM_CPPFLAGS</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_CFLAGS<span class="k">)</span>  -I<span class="k">$(</span>srcdir<span class="k">)</span>/../@BIOMCMCLIB@/lib  @OPENMP_CPPFLAGS@ @ZLIB_LIBS@
-<span class="nv">AM_CFLAGS</span> <span class="o">=</span> @SIMD_FLAGS@ @AM_CFLAGS@  @OPENMP_CFLAGS@
-<span class="nv">LDADD</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_LIBS<span class="k">)</span> @ZLIB_LIBS@ ../biomcmc-lib/lib/libbiomcmc.la  <span class="k">$(</span>AM_LDFLAGS<span class="k">)</span>
-
-<span class="nv">common_headers</span> <span class="o">=</span> kalign.h <span class="se">\</span>
-tldevel.h rng.h global.h <span class="se">\</span>
-alignment_parameters.h <span class="se">\</span>
-bisectingKmeans.h <span class="se">\</span>
-sequence_distance.h <span class="se">\</span>
-alignment.h bpm.h
-
-<span class="nv">common_src</span> <span class="o">=</span> run_kalign.c <span class="se">\</span>
-tldevel.c rng.c <span class="se">\</span>
-alignment_parameters.c <span class="se">\</span>
-bisectingKmeans.c <span class="se">\</span>
-sequence_distance.c <span class="se">\</span>
-alignment.c bpm.c
-
-<span class="nv">noinst_LTLIBRARIES</span> <span class="o">=</span> libkalign.la   <span class="c1">## noinst_LT: linked statically (not installed globally)</span>
-<span class="nv">libkalign_la_SOURCES</span> <span class="o">=</span> config.h <span class="k">$(</span>common_headers<span class="k">)</span> <span class="k">$(</span>common_src<span class="k">)</span>
-</pre></div>
-<p>And the <code>src/Makefile.am</code> (with the final software) can be something like:</p>
-<div class="highlight"><pre><span></span><span class="nv">AM_CPPFLAGS</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_CFLAGS<span class="k">)</span> -I<span class="k">$(</span>srcdir<span class="k">)</span>/../kalign -I<span class="k">$(</span>srcdir<span class="k">)</span>/../@BIOMCMCLIB@/lib @OPENMP_CPPFLAGS@  @ZLIB_LIBS@ 
-<span class="nv">AM_CFLAGS</span> <span class="o">=</span> @AM_CFLAGS@ @OPENMP_CFLAGS@ @CHECK_CFLAGS@
-<span class="nv">LDADD</span> <span class="o">=</span> <span class="k">$(</span>GTKDEPS_LIBS<span class="k">)</span> @CHECK_LIBS@  ../kalign/libkalign.la ../biomcmc-lib/lib/libbiomcmc.la @ZLIB_LIBS@  <span class="k">$(</span>AM_LDFLAGS<span class="k">)</span>
-
-<span class="nv">bin_PROGRAMS</span> <span class="o">=</span> cumaru 
-<span class="nv">cumaru_SOURCES</span> <span class="o">=</span> main.c kseq.h
-<span class="nv">cumaru_LDADD</span> <span class="o">=</span> <span class="k">$(</span>LDADD<span class="k">)</span>
-</pre></div>
-<p>Notice that we need to include the path to the local <code>biomcmc-lib</code> as well, since it is also statically linked.</p>
-<p>The code below performs multiple sequence alignment from hand-fed sequences (in practice, fasta reading usually come from <code>kseq.h</code>).</p>
+<h1 id="005-Hash-functions-and-pseudo-random-number-generation">005 Hash functions and pseudo-random number generation<a class="anchor-link" href="#005-Hash-functions-and-pseudo-random-number-generation">&#182;</a></h1><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a>).</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="prompt input_prompt">In&nbsp;[64]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-c"><pre><span></span><span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/biomcmc-lib/lib</span>
 <span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build.191216/biomcmc-lib/lib</span>
-<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/leomrtns.cumaru/kalign</span>
-<span class="c1">//%cflags: -I/usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build.191216/kalign</span>
-<span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build.191216/kalign/.libs/libkalign.a</span>
 <span class="c1">//%cflags: /usr/users/QIB_fr005/deolivl/Academic/Quadram/009.supersptree/build.191216/biomcmc-lib/lib/.libs/libbiomcmc.a</span>
 <span class="c1">//%cflags:-lm</span>
-<span class="cp">#include</span> <span class="cpf">&lt;kalign.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;biomcmc.h&gt;</span><span class="cp"></span>
 
 <span class="kt">int</span>
 <span class="nf">main</span> <span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="kt">int</span> <span class="n">i</span><span class="p">;</span>
-  <span class="kt">clock_t</span> <span class="n">time0</span><span class="p">,</span> <span class="n">time1</span><span class="p">;</span>
-  <span class="n">char_vector</span> <span class="n">seqname</span> <span class="o">=</span> <span class="n">new_char_vector</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-  <span class="n">char_vector</span> <span class="n">dna</span> <span class="o">=</span> <span class="n">new_char_vector</span> <span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-  <span class="n">char_vector</span> <span class="n">align</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-
-  <span class="n">time0</span> <span class="o">=</span> <span class="n">clock</span> <span class="p">();</span>
-
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">dna</span><span class="p">,</span> <span class="s">&quot;ATCGAAAGAATTAGGCTTAAGCTAAAAGCTTATGACCACAGAGTTCTAGACCGTACAGAT&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">seqname</span><span class="p">,</span> <span class="s">&quot;Campy&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">dna</span><span class="p">,</span> <span class="s">&quot;AGAAAGAATTAGGCTTAAGCTAAGCTTATGACCACAGAGTTCTAGACCGTACAGTT&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">seqname</span><span class="p">,</span> <span class="s">&quot;Vibrio&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">dna</span><span class="p">,</span> <span class="s">&quot;ATGGAAAGAATTAGGCTTAAGCCGGAGCTTATGACCACAGAGTTCTAGAGCGTACAGTT&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">seqname</span><span class="p">,</span> <span class="s">&quot;Strepto&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">dna</span><span class="p">,</span> <span class="s">&quot;ATGGAAAGAATTAGGCTTAAGCTAAAAGCTTATGACTTCATTCTGTACAGTT&quot;</span><span class="p">);</span>
-  <span class="n">char_vector_add_string</span> <span class="p">(</span><span class="n">seqname</span><span class="p">,</span> <span class="s">&quot;Staph&quot;</span><span class="p">);</span>
-
-  <span class="n">align</span> <span class="o">=</span> <span class="n">kalign3_from_char_vector</span> <span class="p">(</span><span class="n">dna</span><span class="p">);</span>
-  <span class="n">time1</span> <span class="o">=</span> <span class="n">clock</span> <span class="p">();</span> 
-  <span class="n">fprintf</span> <span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;finished in  %lf secs</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">time1</span><span class="o">-</span><span class="n">time0</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">CLOCKS_PER_SEC</span><span class="p">));</span> 
-  <span class="n">fflush</span><span class="p">(</span><span class="n">stderr</span><span class="p">);</span>
-
-  <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">align</span><span class="o">-&gt;</span><span class="n">nstrings</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;&gt;%s</span><span class="se">\n</span><span class="s">%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">seqname</span><span class="o">-&gt;</span><span class="n">string</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">align</span><span class="o">-&gt;</span><span class="n">string</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
-
-  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">dna</span><span class="p">);</span>
-  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">align</span><span class="p">);</span>
-  <span class="n">del_char_vector</span> <span class="p">(</span><span class="n">seqname</span><span class="p">);</span>
-  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">seeds</span><span class="p">[]</span><span class="o">=</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">},</span> <span class="n">vec</span><span class="p">[</span><span class="mi">32</span><span class="p">],</span> <span class="n">nvec</span><span class="o">=</span><span class="mi">34</span><span class="p">;</span>
+    <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">c</span><span class="p">;</span>
+    <span class="kt">size_t</span> <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">seeds</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%8x &quot;</span><span class="p">,</span><span class="n">seeds</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;original seeds</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+        <span class="n">biomcmc_salt_vector32_from_spice_table</span> <span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">nvec</span><span class="p">,</span> <span class="n">seeds</span><span class="p">);</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">seed: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+        <span class="c1">//for (j=0; j&lt;nvec;j++) {printf(&quot;%12u &quot;, vec[j]); if (!((j+1)%8)) printf (&quot;\n&quot;); }</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span> <span class="n">vec</span><span class="p">;</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">vec</span><span class="p">);</span>
+        <span class="k">for</span> <span class="p">(;</span> <span class="p">(</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span> <span class="n">c</span><span class="o">++</span><span class="p">,</span> <span class="n">size</span><span class="o">--</span><span class="p">)</span> <span class="p">{</span><span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%4x &quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">c</span><span class="p">);</span> <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">((</span><span class="n">size</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">%</span><span class="mi">16</span><span class="p">))</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span> <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">15</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">j</span><span class="o">&lt;</span><span class="mi">4</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%8x &quot;</span><span class="p">,</span><span class="n">biomcmc_hashint_salted</span> <span class="p">(</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">));</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;&lt;&lt; for hash %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+        
+    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
 
@@ -366,26 +300,52 @@ alignment.c bpm.c
     <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stderr output_text">
-<pre>finished in  0.000583 secs
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>&gt;Campy
-ATCGAAAGAATTAGGCTTAAGCTAAAAGCTTATGACCACAGAGTTCTAGACCGTACAGAT
-&gt;Vibrio
-AG--AAAGAATTAGGCTTAAGCTAA--GCTTATGACCACAGAGTTCTAGACCGTACAGTT
-&gt;Strepto
-ATGGAAAGAATTAGGCTTAAGCCGG-AGCTTATGACCACAGAGTTCTAGAGCGTACAGTT
-&gt;Staph
-ATGGAAAGAATTAGGCTTAAGCTAAAAGCTTATGACTTCA---TTCT-----GTACAGTT
+<pre>       0        1        2        3 original seeds
+  0:        0  1:        1  2:        2  3:        3  ::DEBUGSEED
+  0: c0a9496a  1: b48681b6  2: 25ac1fe5  3:   7f181c  ::DEBUGSEED
+  0: b74d7928  1: fa9384d8  2: 58a14bfb  3: b62272f6  ::DEBUGSEED
+  0: 2d05ff9e  1: b621b33c  2: 9cc8151d  3: 5ab560c5  ::finalSEED
+
+seed: 0
+  15   16   16   b4   31   aa   fc   2e    8   e1   47   99   c5   97   a4   c1 
+  1c   92   1d   57   11   cc    f   cf   d7   46   bc   31   87   e1   6f   1f 
+  c3   2f   8f   43   99   da   38   db    0   10   46   f7   cf   82   64   17 
+  12   85   de   24   12    b   9a   5c   c0    c   63   d5   b0   c7    e   58 
+  ae   f5   4c   ae   f7   70   1b   e4   a2   ac   48   c0   f0   79   b0   a7 
+  7f   29   eb   ff   ff   bc   cc   ff   8e   dc   13   d8   52   af    2   97 
+  4d   a4   58   3c   d8   55   69   1c   b1   71   e3   52   c4   75    e    1 
+  85   ff    3   94   91   5f    2   80   e2   ee    5    0   74   80    1    0 
+       1 b621b33c 9cc8151d 5ab560c5 original seeds
+  0:        1  1: b621b33c  2: 9cc8151d  3: 5ab560c5  ::DEBUGSEED
+  0: 27922c9d  1: ca56afe8  2: d85906dc  3: 15586ad6  ::DEBUGSEED
+  0: 679cc3ce  1: 63f95783  2: 5b44b1e1  3: 7c7bb552  ::DEBUGSEED
+  0: 2fc5536f  1: 10653349  2: 903a7c22  3: a9b17c73  ::finalSEED
+
+seed: 1
+  28   9b   24   33   31   aa   fc   2e    0   3c   d8   f4   62   58    8   b6 
+  d1   f6   6e   72   12   76   51   1c   22   a5   ce   9a   c4   a0   c6   82 
+  c3   3a   33   11   37   19   39   7b   30   94   51   fa   d2   9c   a9   d2 
+  88   c0   c9   96   bc   1a   9a   18   3e   b0   8f   ed    0   2f   20   6c 
+  a9   fb   69   a6   aa   6c   e5   1d   4c    2   e6   2f   42   9d   b1   5e 
+  5f   92   ed   ff   7f   2e   cc   ff   ee   99    3   4c    c   cf   7d   2e 
+   a    a   77   cb   b0   6d   ab   c3   d0   e8   11   a6   20   6c   2f   f6 
+  78   82   95   10   1a   40    2   80   44   8f   84   34   e0   af    4    0 
+c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 0
+6b4ed927 b48681b6 e267b84c 4f6e0e9c &lt;&lt; for hash 1
+caa3caa3 12d60bf6 25ac1fe5 3882835c &lt;&lt; for hash 2
+    d0dc   2a6ee1   55234f   7f181c &lt;&lt; for hash 3
+deb66b58 deb66ab9 deb66a9a deb66afb &lt;&lt; for hash 4
+2ba588a6 2ba58337 2ba51840 2ba510d1 &lt;&lt; for hash 5
+acefdd39 ec26e4d2 75fe3d8c ce4259f1 &lt;&lt; for hash 6
+4636b9c9 62baf5a0 ff4d1170 2bf062cf &lt;&lt; for hash 7
+b7255c83 a63ec54b 2a674713 c0186ef5 &lt;&lt; for hash 8
+ad92d5f0 8e953d2f 8f005635 cb773d1b &lt;&lt; for hash 9
+e6546b64 e6546b64 e6546b64 e6546b64 &lt;&lt; for hash 10
+c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 11
+c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 12
+c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 13
+c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 14
 </pre>
 </div>
 </div>
@@ -550,7 +510,7 @@ ATGGAAAGAATTAGGCTTAAGCTAAAAGCTTATGACTTCA---TTCT-----GTACAGTT
 </div>
 <hr>
 &copy; 2019 Leonardo de Oliveira Martins
-<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/75b9854b1e1590a56e656628042ed8fbe43ffa19/Programming/004.kalign3.ipynb"><code>Programming/004.kalign3.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Tue Dec 17 08:15:15 2019 <a href="https://github.com/leomrtns/notebooks/commit/75b9854b1e1590a56e656628042ed8fbe43ffa19">revision 4, 75b9854</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/75b9854b1e1590a56e656628042ed8fbe43ffa19/Programming/005.random_hash.ipynb"><code>Programming/005.random_hash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Tue Dec 17 08:15:15 2019 <a href="https://github.com/leomrtns/notebooks/commit/75b9854b1e1590a56e656628042ed8fbe43ffa19">revision 1, 75b9854</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
 </div>
 </div>
 </body>
