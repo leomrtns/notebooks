@@ -243,141 +243,8 @@ body {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="005-Hash-functions-and-pseudo-random-number-generation">005 Hash functions and pseudo-random number generation<a class="anchor-link" href="#005-Hash-functions-and-pseudo-random-number-generation">&#182;</a></h1><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/5975331ef88d1c4ec9aef9599fb6348905d289c7">5975331</a>).</p>
-<h2 id="Printing-colours">Printing colours<a class="anchor-link" href="#Printing-colours">&#182;</a></h2><p>This week I've been refactoring the random and hash modules of <code>biomcmc-lib</code>. I am also adding user-friendly functionality &mdash; linux fortunes and coloured printing. Here we can see my test with colours in <code>printf()</code>.</p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-c"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
-<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">mytext</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;this has ` , $ percent \% and &#39; while&quot;</span><span class="p">,</span> <span class="s">&quot;so  \%d ____^H^H^H^Hmany&quot;</span><span class="p">};</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="n">col_reset</span><span class="p">[]</span> <span class="o">=</span> <span class="s">&quot;\e[0m&quot;</span><span class="p">;</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">rownames</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;regular&quot;</span><span class="p">,</span> <span class="s">&quot;bold&quot;</span><span class="p">,</span> <span class="s">&quot;underline&quot;</span><span class="p">,</span> <span class="s">&quot;background&quot;</span><span class="p">,</span> <span class="s">&quot;highbckgrnd&quot;</span><span class="p">,</span> <span class="s">&quot;hightext&quot;</span><span class="p">,</span> <span class="s">&quot;boldhightxt&quot;</span><span class="p">};</span>
-<span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">prt_col</span><span class="p">[][</span><span class="mi">8</span><span class="p">]</span><span class="o">=</span><span class="p">{</span> <span class="c1">// 0-black   1-red   2-grn   3-yel   4-blu   5-mag   6-cyn   7-white</span>
-   <span class="p">{</span><span class="s">&quot;\e[0;30m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;31m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;32m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;33m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;34m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;35m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;36m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;37m&quot;</span><span class="p">},</span>  <span class="c1">// 0 regular text</span>
-   <span class="p">{</span><span class="s">&quot;\e[1;30m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;31m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;32m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;33m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;34m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;35m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;36m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;37m&quot;</span><span class="p">},</span>  <span class="c1">// 1 regular bold text</span>
-   <span class="p">{</span><span class="s">&quot;\e[4;30m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;31m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;32m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;33m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;34m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;35m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;36m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[4;37m&quot;</span><span class="p">},</span>  <span class="c1">// 2 regular underline text</span>
-   <span class="p">{</span><span class="s">&quot;\e[40m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[41m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[42m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[43m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[44m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[45m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[46m&quot;</span><span class="p">,</span>    <span class="s">&quot;\e[47m&quot;</span><span class="p">},</span>    <span class="c1">// 3 regular background</span>
-   <span class="p">{</span><span class="s">&quot;\e[0;100m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;101m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;102m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;103m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;104m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;105m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;106m&quot;</span><span class="p">,</span> <span class="s">&quot;\e[0;107m&quot;</span><span class="p">},</span> <span class="c1">// 4 high intensity underground</span>
-   <span class="p">{</span><span class="s">&quot;\e[0;90m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;91m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;92m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;93m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;94m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;95m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;96m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[0;97m&quot;</span><span class="p">},</span>  <span class="c1">// 5 high intensity text </span>
-   <span class="p">{</span><span class="s">&quot;\e[1;90m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;91m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;92m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;93m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;94m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;95m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;96m&quot;</span><span class="p">,</span>  <span class="s">&quot;\e[1;97m&quot;</span><span class="p">}</span>   <span class="c1">// 6 bold high intensity text</span>
-<span class="p">};</span>
-
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">i</span><span class="o">&lt;</span><span class="mi">8</span><span class="p">;</span><span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">%d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
-        <span class="k">for</span> <span class="p">(</span><span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%15s : %s&gt;%s&lt;&gt;%s&lt;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="n">rownames</span><span class="p">[</span><span class="n">j</span><span class="p">],</span><span class="n">prt_col</span><span class="p">[</span><span class="n">j</span><span class="p">][</span><span class="n">i</span><span class="p">],</span><span class="n">mytext</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mytext</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">col_reset</span><span class="p">);</span>
-    <span class="p">};</span>
-    <span class="c1">// test with marsaglia constants (should print prime numbers)</span>
-    <span class="n">printf</span> <span class="p">(</span><span class="s">&quot;%5d %5d %5d&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">18000</span><span class="o">&lt;&lt;</span><span class="mi">16</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">18000</span><span class="o">&lt;&lt;</span><span class="mi">15</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">18030</span><span class="o">&lt;&lt;</span><span class="mi">16</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
-<span class="p">}</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-0
-        regular : <span class="ansi-black-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-black-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-black-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-black-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-black-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-black-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-black-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-1
-        regular : <span class="ansi-red-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-red-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-red-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-red-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-red-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-red-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-red-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-2
-        regular : <span class="ansi-green-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-green-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-green-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-green-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-green-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-green-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-green-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-3
-        regular : <span class="ansi-yellow-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-yellow-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-yellow-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-yellow-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-yellow-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-yellow-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-yellow-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-4
-        regular : <span class="ansi-blue-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-blue-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-blue-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-blue-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-blue-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-blue-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-blue-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-5
-        regular : <span class="ansi-magenta-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-magenta-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-magenta-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-magenta-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-magenta-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-magenta-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-magenta-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-6
-        regular : <span class="ansi-cyan-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-cyan-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-cyan-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-cyan-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-cyan-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-cyan-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-cyan-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-
-7
-        regular : <span class="ansi-white-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-           bold : <span class="ansi-white-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-      underline : <span class="ansi-white-fg ansi-underline">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-     background : <span class="ansi-white-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    highbckgrnd : <span class="ansi-white-intense-bg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-       hightext : <span class="ansi-white-intense-fg">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-    boldhightxt : <span class="ansi-white-intense-fg ansi-bold">&gt;this has ` , $ percent % and &#39; while&lt;&gt;so  %d ____^H^H^H^Hmany&lt;</span>
-1179647999 589823999 1181614079</pre>
-</div>
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>And this is the same output in my terminal (black background):
-<img src="../figures/191213.colourprint.png" align="center" width="500"></p>
+<h1 id="005-Hash-functions-and-pseudo-random-number-generation">005 Hash functions and pseudo-random number generation<a class="anchor-link" href="#005-Hash-functions-and-pseudo-random-number-generation">&#182;</a></h1><p>This notebook uses the low-level phylogenetic library <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib">biomcmc-lib</a> (commit <a href="https://github.com/quadram-institute-bioscience/biomcmc-lib/commit/da29c5c9f76b5ee8d66f489fb7800abccf486ec2">da29c5c</a>).</p>
+<p>Here I show two small tests, one with generation of an initial set of random numbers, and another on <code>popcount()</code> speeds.</p>
 
 </div>
 </div>
@@ -488,6 +355,15 @@ c0a9496a 27922c9d c6793575 87d06fbe &lt;&lt; for hash 14
 </div>
 
 </div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Counting-the-number-of-active-bits-(pop_count())">Counting the number of active bits (<code>pop_count()</code>)<a class="anchor-link" href="#Counting-the-number-of-active-bits-(pop_count())">&#182;</a></h2><p>I have recently implemented a few faster versions of 64 bits <em>popcounts</em>, and below I compare them with my first implementation &mdash; in the context of "bipartitions", which are vectors of bitstrings.</p>
+<p>First I check if they are calculating the right thing (number of "ones" in a vector of 64 bit integers). And then I see which is faster. I expected <code>pop0()</code> to be slowest (it is linear on the number of active bits), and the others to be similar. Which is what we observe. The one I've chosen to be the new "default" on <code>biomcmc-lib</code> is <code>pop1()</code>, which I've seen in <a href="https://github.com/ruanjue/wtdbg">Jue Ruan's RedBean</a> and also in <a href="https://github.com/KChen-lab/novoBreak">novoBreak</a>. The previous default was the <code>i &amp;= i -1</code> trick described in K &amp; R. The other two are from <a href="http://www.dalkescientific.com/writings/diary/archive/2008/07/03/hakmem_and_other_popcounts.html">Andrew Dalke</a>.</p>
+
+</div>
+</div>
+</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[25]:</div>
@@ -596,22 +472,9 @@ pop3: 0.19488300 secs
 </div>
 
 </div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-c"><pre><span></span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-</div>
 <hr>
 &copy; 2019 Leonardo de Oliveira Martins
-<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/6933970cf98873dbd64e6cc30942e989f6c92add/Programming/005.random_hash.ipynb"><code>Programming/005.random_hash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Wed Jan 29 10:38:04 2020 <a href="https://github.com/leomrtns/notebooks/commit/6933970cf98873dbd64e6cc30942e989f6c92add">revision 2, 6933970</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
+<p><small>Exported from <a href="https://github.com/leomrtns/notebooks/blob/d2f18b9a420cc259f82713c06c064daf2f40786b/Programming/005.random_hash.ipynb"><code>Programming/005.random_hash.ipynb</code></a> committed by Leonardo de-Oliveira-Martins (QIB) on Wed Jan 29 11:04:21 2020 <a href="https://github.com/leomrtns/notebooks/commit/d2f18b9a420cc259f82713c06c064daf2f40786b">revision 3, d2f18b9</a> <a href="https://stephenslab.github.io/ipynb-website/notes.html#Note-about-commit-ids"><span class="fa fa-question-circle"></span></a></small></p>
 </div>
 </div>
 </body>

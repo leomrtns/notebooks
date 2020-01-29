@@ -1,7 +1,7 @@
 var IntroductionArray = []
 var IntroductionDict = {}
 var IntroductionArrayMap = {}
-var ProgrammingArray = ['001.kmer', '002.quantile', '003.rollinghash', '004.kalign3']
+var ProgrammingArray = ['001.kmer', '002.quantile', '005.random_hash', '003.rollinghash', '004.kalign3']
 var ProgrammingDict = {'001-K-mer-in-biomcmc-lib-(2019.11.29)-1': '001.kmer', '002-Quantile-functions-implemented-in-biomcmc-lib-1': '002.quantile', '003-Minimal-example-of-a-rolling-hash-1': '003.rollinghash', '004-kalign-and-colour-printing-1': '004.kalign3', '005-Hash-functions-and-pseudo-random-number-generation-1': '005.random_hash'}
 var ProgrammingArrayMap = {'001.kmer': '001 K-mer in biomcmc-lib (2019.11.29)', '002.quantile': '002 Quantile functions  ... biomcmc-lib', '003.rollinghash': '003 Minimal example of a rolling hash', '004.kalign3': '004 kalign and colour printing', '005.random_hash': '005 Hash functions and  ... r generation'}
 var PhylogeneticsArray = []
