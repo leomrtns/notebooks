@@ -1,5 +1,8 @@
 # Webpage from Jupyter notebooks
 
+** This has been superseded by fastpages, I won't update this repo. The pages can still be accessed through
+https://leomrtns.github.io/notebooks/.
+
 * I should have a "legacy" tab with code that relies on old versions of code.
 In such cases the jupyter notebook doesn't work anymore (unless I also copy here a version of the libraries)
 

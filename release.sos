@@ -2,8 +2,11 @@
 #fileformat=SOS1.0
 import os, sys, glob
 
-sys.path.append('docs')
+parameter: root = path('docs')
 parameter: pip = 'pip'
+parameter: overwrite_rmd = False
+parameter: hide_code = False
+sys.path.append(f'{root:a}')
 
 [default_1 (Configure website): shared = ['conf', 'binders', 'notebook_files', 'rmd_files', 'index_files', 'pipeline_files', 'generated_files', 'password', 'status']]
 depends: Py_Module('bs4', autoinstall=True), Py_Module('date_parser', autoinstall=True)
@@ -38,18 +41,15 @@ DEFAULT_CONF = {
            }
 status = 0
 try:
-  from jnbinder import compare_versions, update_gitignore
+  from jnbinder import compare_versions, update_gitignore, get_base_link
 except Exception as e:
+  status = 1
   if 'jnbinder' in str(e):
      sos_run('setup-jnbinder')
-     try:
-       from jnbinder import compare_versions, update_gitignore
-     except Exception as e:
-       status = 1
-       fail_if(status, msg = str(e))
+     fail_if(status, msg = f"``jnbinder`` program has just been installed to ``{root}`` but you need to configure ``config.yml`` and rerun this program.")
   else:
      raise RuntimeError('{}. You can try `pip install` to install the missing module.'.format(e))
-if len(glob.glob('.sos/*')) and os.path.isdir(".git"):
+if os.path.isdir(".git"):
    update_gitignore()
 if compare_versions(SOS_VERSION, DEFAULT_CONF["__sos_version__"]) < 0:
   sos_run("upgrade-sos")
@@ -65,11 +65,11 @@ with open('config.yml', 'r') as f:
     conf = yaml.safe_load(f)
 fail_if(conf is None, msg = err_msg)
 conf.update({k:v for k,v in DEFAULT_CONF.items() if k not in conf})
-conf['jt_theme'] = conf['theme'] if os.path.isfile(f"docs/css/{conf['theme']}.css") else None
+conf['jt_theme'] = conf['theme'] if os.path.isfile(f"{root}/css/{conf['theme']}.css") else None
 for k in ['include_dir', 'hide_navbar', 'exclude_file', 'reverse_autoindex']:
     conf[k] = [os.path.normpath(x) for x in conf[k]]
 for item in conf['include_dir']:
-    if os.path.basename(item) in ['css', 'fonts', 'js', 'site_libs', 'docs']:
+    if os.path.basename(item) in ['css', 'fonts', 'js', 'site_libs', root]:
        status = 1
        fail_if(stats, msg = f'Folder name ``{item}`` conflicts with website library paths. Please use a different name.')
 conf['remove_whiteline'] = 1 if conf['remove_whiteline'] else 0
@@ -78,18 +78,21 @@ if conf['site_url'] is None:
 if conf['auto_highlight'] is None:
    conf['auto_highlight'] = ('pack', 'null')
 else:
-   if os.path.isfile(f'docs/site_libs/highlightjs/highlight.{conf["auto_highlight"]}.js'):
+   if os.path.isfile(f'{root}/site_libs/highlightjs/highlight.{conf["auto_highlight"]}.js'):
       conf['auto_highlight'] = (conf['auto_highlight'], 'jnbinder')
    else:
       conf['auto_highlight'] = ('pack', 'jnbinder')
 binders = [x for x in conf['include_dir'] if os.path.isdir(x)]
-# binders = [x for x in next(os.walk('./'))[1] if x not in conf['exclude_dir'] + ['docs'] and not x.startswith('.')]
+# binders = [x for x in next(os.walk('./'))[1] if x not in conf['exclude_dir'] + [root] and not x.startswith('.')]
 fail_if(len(binders) == 0, msg = err_msg)
-rmd_files = sum([[y for y in glob.glob(f"{x}/*.Rmd") if y not in conf['exclude_file']] for x in binders], [])
-notebook_files = sum([[y for y in glob.glob(f"{x}/*.ipynb") if y not in [f"{x}/index.ipynb", f"{x}/_index.ipynb", conf['homepage']] + conf['exclude_file']] for x in binders], []) + [x.replace('.Rmd', '.ipynb') for x in rmd_files]
+rmd_files = sum([[y for y in glob.glob(f"{x}/**/*.Rmd", recursive=True) if y not in conf['exclude_file']] for x in binders], [])
+if conf['homepage'].endswith('.Rmd') or conf['homepage'].endswith('.md'):
+  rmd_files.append(conf['homepage'])
+  conf['homepage']= os.path.splitext(conf['homepage'])[0] + '.ipynb' 
+notebook_files = list(set(sum([[y for y in glob.glob(f"{x}/**/*.ipynb", recursive=True) if y not in [f"{x}/index.ipynb", f"{x}/_index.ipynb", conf['homepage']] + conf['exclude_file']] for x in binders], []) + [os.path.splitext(x)[0] + '.ipynb' for x in rmd_files if x.endswith('Rmd')]))
 index_files = [f'{x}/index.ipynb' if os.path.isfile(f'{x}/index.ipynb') else f'{x}/_index.ipynb' for x in binders if x not in conf['hide_navbar']]
-pipeline_files = sum([[y for y in glob.glob(f"{x}/*.sos") if y not in conf['exclude_file']] for x in binders], [])
-generated_files = [f'docs/{x}.html' for x in binders if x not in conf['hide_navbar']] + (['docs/index.html'] if not conf['skip_homepage'] else []) + [f"docs/{path(x):d}/index.html" if f'{path(x):db}' == f'{path(x):bn}' else f"docs/{x.replace('.ipynb', '.html')}" for x in notebook_files] + ['docs/' + x.replace('.sos', '.pipeline.html') for x in pipeline_files] + ['docs/js/docs.js', 'docs/index.tpl'] + [f"docs/{x}.tpl" for x in binders]
+pipeline_files = sum([[y for y in glob.glob(f"{x}/**/*.sos", recursive=True) if y not in conf['exclude_file']] for x in binders], [])
+generated_files = [f'{root}/{x}.html' for x in binders if x not in conf['hide_navbar']] + ([f'{root}/index.html'] if not conf['skip_homepage'] else []) + [f'{root}/{get_base_link(x)}' for x in notebook_files] + [f'{root}/{get_base_link(x, "pipeline.html")}' for x in pipeline_files] + [f'{root}/js/docs.js', f'{root}/index.tpl'] + [f"{root}/{x}.tpl" for x in binders]
 if conf['password_file'] is not None and os.path.isfile(conf['password_file']):
    with open(conf['password_file']) as f:
         password = {os.path.normpath(k): v for k, v in yaml.safe_load(f).items()}
@@ -99,8 +102,16 @@ if conf['password_file'] is not None and os.path.isfile(conf['password_file']):
           fail_if(status, msg = f"Cannot find ``{key}``. Please comment out or remove it from ``{conf['password_file']}``")
 else:
    password = None
-for item in rmd_files:
-    fail_if(os.path.isfile(os.path.splitext(item)[0] + '.ipynb'), msg = f"Rmarkdown file name ``{item}`` conflicts with existing notebook ``{os.path.splitext(item)[0] + '.ipynb'}``. If the notebook was automatically generated you can use ``rm -f {os.path.splitext(item)[0] + '.ipynb'}`` to remove it.")
+conflicting_notebooks = [os.path.splitext(item)[0] + '.ipynb' for item in rmd_files if os.path.isfile(os.path.splitext(item)[0] + '.ipynb')]
+fail_if(len(conflicting_notebooks) and not overwrite_rmd, msg = f"Rmarkdown files conflicts with existing notebooks ``{' '.join(conflicting_notebooks)}``. If the notebook was automatically generated you can either remove them, or use ``--overwrite-rmd`` to allow overwritting them.")
+stop_if(status)
+err_msg = '''
+To properly add in version info, all changes made to source notebooks must be committed.
+Please use ``git commit`` to commit changes and run this command again. Or you may
+set ``add_commit_info: False`` in ``config.yml`` if you want to disable this feature.
+'''
+changed_list = get_output('git status --untracked-files=no --porcelain')
+fail_if(os.path.isdir('.git') and ('ipynb' in changed_list or 'Rmd' in changed_list) and conf['add_commit_info'], msg = err_msg)
 
 [download-jnbinder: provides = 'jnbinder-master/README.md']
 download: decompress = True, dest_file = 'jnbinder-master.zip'
@@ -108,22 +119,19 @@ download: decompress = True, dest_file = 'jnbinder-master.zip'
 
 [setup-jnbinder]
 depends: 'jnbinder-master/README.md'
-run:
-  yes | cp -rf jnbinder-master/docs ./
-  cp jnbinder-master/config.yml config.default.yml
+run: expand = True
+  mkdir -p {root}
+  yes | cp -rf jnbinder-master/docs/* {root}/
+  cp jnbinder-master/config.yml {'config.default.yml' if os.path.isfile('config.yml') else 'config.yml'}
   rm -rf jnbinder-master*
 
 [upgrade-jnbinder]
 depends: 'jnbinder-master/README.md'
-bash:
-  mkdir -p docs
-  rm -rf docs/{css,fonts,jnbinder.py,js,site_libs}
-  cp -r jnbinder-master/docs/{css,fonts,jnbinder.py,js,site_libs} docs
-  if [ -f release.sos ]; then
-     cp jnbinder-master/release ./release.sos
-  else
-     cp jnbinder-master/release ./
-  fi
+bash: expand = "${ }"
+  mkdir -p ${root}
+  rm -rf ${root}/{css,fonts,jnbinder.py,js,site_libs}
+  cp -r jnbinder-master/${root}/{css,fonts,jnbinder.py,js,site_libs} ${root}
+  cp jnbinder-master/jnbinder_docker.sh ./
   rm -rf jnbinder-master*
 
 [upgrade-sos (SoS upgrader)]
@@ -142,9 +150,9 @@ run: expand = True
 parameter: binders = list
 parameter: conf = dict
 input: None
-output: [f"docs/{x}.tpl" for x in binders] + ['docs/index.tpl']
+output: [f"{root}/{x}.tpl" for x in binders] + [f'{root}/index.tpl']
 from jnbinder import make_template
-make_template(conf, binders, 'docs')
+make_template(conf, binders, root)
 
 [update-index (Index notebook generator)]
 parameter: binders = list
@@ -164,88 +172,99 @@ if not os.path.isfile(conf['homepage']):
 
 [update-hp (Index HTML updater)]
 parameter: index_files = list
-parameter: conf = dict
+parameter: homepage = str
+parameter: skip_homepage = bool
+parameter: hide_navbar = bool
+parameter: remove_whiteline = int
 parameter: password = str
-depends: sos_step("update-tpl"), executable('jupyter'), executable('sed'), executable('perl'), Py_Module('jupyter_contrib_nbextensions', autoinstall=True), path(conf['homepage']).with_suffix('.ipynb')
-input_files = index_files + ([path(conf['homepage']).with_suffix('.ipynb')] if not conf['skip_homepage'] else [])
-output_files = [f'docs/{x}.html' for x in binders if x not in conf['hide_navbar']] + (['docs/index.html'] if not conf['skip_homepage'] else [])
+depends: executable('jupyter'), executable('sed'), executable('perl'), Py_Module('jupyter_contrib_nbextensions', autoinstall=True), path(homepage).with_suffix('.ipynb')
+from jnbinder import get_sha1_files
+input_files = index_files + ([path(homepage).with_suffix('.ipynb')] if not skip_homepage else [])
+output_files = [f'{root}/{x}.html' for x in binders if x not in hide_navbar] + ([f'{root}/index.html'] if not skip_homepage else [])
 input: dynamic(input_files), group_by = 1
 output: output_files, group_by = 1
 bash: expand = "${ }", stderr = False
-  jupyter nbconvert ${_input:e} --output ${_output:ae} --template docs/index.tpl
+  jupyter nbconvert ${_input:e} --output ${_output:ae} --template ${root}/index.tpl ${"--no-input" if hide_code else ""}
   # sed -i 's/<div class="prompt input_prompt">In&nbsp;\[[0-9]\]:<\/div>//g' ${_output:e}
-  if [[ ${conf['remove_whiteline']} -gt 0 ]]; then
+  if [[ ${remove_whiteline} -gt 0 ]]; then
      perl -i -ne 'print if /\S/' ${_output:e}
   fi
 
-python: expand = "${ }", input = 'docs/jnbinder.py'
-  get_sha1_files([(${_input:r}, ${_output:r})], [], ${password}, write = True)
+get_sha1_files([(_input, _output)], [], password, write=True, docs_dir=root)
 
 [update-nb (Notebook to HTML converter)]
 parameter: notebook_files = list
-parameter: rmd_files = list
-parameter: conf = dict
+parameter: nb_info = list
+parameter: remove_whiteline = int
+parameter: footer = str
 parameter: password = str
 stop_if(len(notebook_files) == 0)
-depends: sos_step("update-tpl"), executable('jupyter'), executable('sed'), executable('perl'), Py_Module('jupyter_contrib_nbextensions', autoinstall=True), paths(notebook_files)
-from jnbinder import get_commit_info
-nb_info = [get_commit_info(x[:-5] + 'Rmd' if path(x).with_suffix(".Rmd").exists() else x, conf) for x in notebook_files]
+depends: executable('jupyter'), executable('sed'), executable('perl'), Py_Module('jupyter_contrib_nbextensions', autoinstall=True), paths(notebook_files)
+from jnbinder import get_base_link, get_sha1_files
 input: notebook_files, group_by = 1, paired_with = ['nb_info']
-output: [f"docs/{path(x):d}/index.html" if f'{path(x):db}' == f'{path(x):bn}' else f"docs/{x.replace('.ipynb', '.html')}" for x in notebook_files], group_by = 1
+output: [f"{root}/{get_base_link(x)}" for x in notebook_files], group_by = 1
 bash: expand = "${ }", stderr = False
-  jupyter nbconvert ${_input:e} --output ${_output:ae} --template docs/${_input:d}.tpl ${"--execute" if str(_input.with_suffix(".Rmd")) in rmd_files else ""}
-  num=`grep -n -Fx '''${conf['footer']}''' ${_output:e} | tail -1 | sed 's/\([0-9]*\).*/\1/'`
+  jupyter nbconvert ${_input:e} --output ${_output:ae} --template ${root}/${str(_input).split(os.path.sep)[0]}.tpl ${"--no-input" if hide_code else ""}
+  num=`grep -n -Fx '''${footer}''' ${_output:e} | tail -1 | sed 's/\([0-9]*\).*/\1/'`
   perl -i -lpe 'print "${_nb_info[0]}" if $. == '"$num"'+1' ${_output:e}
-  if [[ ${conf['remove_whiteline']} -gt 0 ]]; then
+  if [[ ${remove_whiteline} -gt 0 ]]; then
      perl -i -ne 'print if /\S/' ${_output:e}
   fi
 
-python: expand = "${ }", input = 'docs/jnbinder.py'
-  get_sha1_files([], [(${_input:r}, ${_output:r})], ${password}, write = True)
+get_sha1_files([], [(_input, _output)], password, write=True, docs_dir=root)
 
 [update-wf (Pipeline to HTML converter)]
 parameter: pipeline_files = list
 stop_if(len(pipeline_files) == 0)
+from jnbinder import get_base_link
 input: pipeline_files, group_by = 1
-output: [f"docs/{x.replace('.sos', '.pipeline.html')}" for x in pipeline_files], group_by = 1
+output: [f"{root}/{get_base_link(x, 'pipeline.html')}" for x in pipeline_files], group_by = 1
 run: expand = "${ }", stdout = False, stderr = False
   sos convert ${_input} ${_output}
 
 [update-toc (TOC Javascript updater)]
 parameter: notebook_files = list
+parameter: pipeline_files = list
 parameter: index_files = list
 parameter: binders = list
-parameter: conf = dict
-input: dynamic(notebook_files + index_files)
-output: 'docs/js/docs.js'
+parameter: exclude_file = list
+parameter: homepage = str
+input: dynamic(notebook_files + pipeline_files + index_files)
+output: f'{root}/js/docs.js'
 from jnbinder import get_toc
-out = [get_toc(x, conf['exclude_file'] + [conf['homepage']]) for x in binders]
+out = [get_toc(x, exclude_file + [homepage]) for x in binders]
 with open(_output, 'w') as f:
   f.write('\n'.join(['\n'.join(x) for x in out]))
 
 [update-search (Search Javescript updater)]
 parameter: generated_files = list
-parameter: conf = dict()
+parameter: url = str
 input: generated_files
-output: 'docs/site_libs/tipuesearch/tipuesearch_content.js'
+output: f'{root}/site_libs/tipuesearch/tipuesearch_content.js'
 from jnbinder import generate_tipue_content
-generate_tipue_content(generated_files, conf['site_url'], 'docs/')
-with open('docs/search.html', 'w') as f:
-  f.write(open('docs/site_libs/tipuesearch/search.html').read())
+generate_tipue_content(generated_files, url, f'{root}/')
+with open(f'{root}/search.html', 'w') as f:
+  f.write(open(f'{root}/site_libs/tipuesearch/search.html').read())
 
 [remove-obsolete (Obsolete files remover)]
 parameter: conf = dict()
+parameter: index_files = list
+parameter: notebook_files = list
+parameter: pipeline_files = list
+parameter: binders = list
 parameter: generated_files = list
 parameter: password = str
-output: 'docs/MANIFEST'
-from jnbinder import get_sha1_files
+output: f'{root}/MANIFEST'
+from jnbinder import get_sha1_files, get_base_link
 if os.path.isfile(_output):
   old_files = [x.strip() for x in open(_output).readlines()]
-  all_f1 = [(x, y) for x, y in zip(index_files + [conf['homepage']], [f'docs/{x}.html' for x in binders if x not in conf['hide_navbar']] + (['docs/index.html'] if not conf['skip_homepage'] else []))]
-  all_f2 = [(x, y) for x, y in zip(notebook_files,  [f"docs/{x.replace('.ipynb', '.html')}" for x in notebook_files])]
-  sha1_files = [f"docs/{item.rsplit('_', 1)[-1][:-5]}/{path(item.rsplit('_', 1)[0]):b}.html" if item.rsplit('_', 1)[-1][:-5] != 'docs' else f"docs/{path(item.rsplit('_', 1)[0]):b}.html" for item in get_sha1_files(all_f1, all_f2, password)]
+  all_f1 = [(x, y) for x, y in zip(index_files + [conf['homepage']], [f'{root}/{x}.html' for x in binders if x not in conf['hide_navbar']] + ([f'{root}/index.html'] if not conf['skip_homepage'] else []))]
+  all_f2 = [(x, y) for x, y in zip(notebook_files,  [f'{root}/{get_base_link(x)}' for x in notebook_files])]
+  all_f3 = [(x, y) for x, y in zip(pipeline_files, [f'{root}/{get_base_link(x, "pipeline.html")}' for x in notebook_files])]
+
+  sha1_files = [f"{root}/{item.rsplit('_', 1)[-1][:-5]}/{path(item.rsplit('_', 1)[0]):b}.html" if item.rsplit('_', 1)[-1][:-5] != root else f"{root}/{path(item.rsplit('_', 1)[0]):b}.html" for item in get_sha1_files(all_f1, all_f2 + all_f3, password, docs_dir=root)]
   for item in [x for x in old_files if not x in generated_files + sha1_files]:
-    if item == 'docs/index.html':
+    if item == f'{root}/index.html':
       continue
     try:
       os.remove(item)
@@ -260,46 +279,47 @@ with open(_output, 'w') as f:
 parameter: conf = dict()
 stop_if(conf['release_message'] is None)
 try:
-  get_output(f'''cd docs && git add . && git commit --no-verify -m "{conf['release_message']}" && git push --no-verify''')
+  get_output(f'''cd {root} && git add . && git commit --no-verify -m "{conf['release_message']}" && git push --no-verify''')
   get_output(conf['post_release_actions'])
 except:
   pass
 
 [clean]
 # remove generated files
-depends: 'docs/MANIFEST'
-for item in [x.strip() for x in open('docs/MANIFEST').readlines()]:
+depends: f'{root}/MANIFEST'
+for item in [x.strip() for x in open(f'{root}/MANIFEST').readlines()]:
   try:
     os.remove(item)
   except OSError:
     pass
 
-[ipyrmd (Rmarkdown to ipynb): provides = '{data}.ipynb']
+[default_2 (Rmarkdown to ipynb)]
 depends: Py_Module("ipyrmd", autoinstall=True), R_library('IRkernel'), R_library('IRdisplay')
-input: f'{data}.Rmd'
-output: f'{data}.ipynb'
+skip_if(len(rmd_files)==0)
+input: rmd_files, group_by=1, concurrent=True
+output:f'{_input:n}.ipynb'
 run: expand = "${ }", stdout = False, stderr = False
   ipyrmd --to ipynb --from Rmd -y -o ${_output} ${_input}
+  jupyter nbconvert --to notebook --execute ${_output} --ExecutePreprocessor.timeout=360 ${"--no-input" if hide_code else ""}
+  mv ${_output:nn}.nbconvert.ipynb ${_output} 
 
-[default_2 (Build website)]
-# build ipynb website ...
-err_msg = '''
-To properly add in version info, all changes made to source notebooks must be committed.
-Please use ``git commit`` to commit changes and run this command again. Or you may
-set ``add_commit_info: False`` in ``config.yml`` if you want to disable this feature.
-'''
-stop_if(status)
-changed_list = get_output('git status --untracked-files=no --porcelain')
-fail_if(os.path.isdir('.git') and ('ipynb' in changed_list or 'Rmd' in changed_list) and conf['add_commit_info'], msg = err_msg)
+[default_3 (Build website)]
+input: group_by = 'all'
+from jnbinder import get_commit_info
 sos_run('update-index', conf=conf, binders=binders, notebook_files=notebook_files)
-sos_run('update-hp + update-nb + update-wf + update-toc + update-search + remove-obsolete', conf=conf, binders=binders, notebook_files=notebook_files, rmd_files=rmd_files, index_files=index_files, pipeline_files=pipeline_files, generated_files=generated_files, password=password)
+sos_run('update-tpl', conf=conf, binders=binders)
+sos_run('update-hp', binders=binders, homepage=conf['homepage'], skip_homepage=conf['skip_homepage'], remove_whiteline=conf['remove_whiteline'], hide_navbar=conf['hide_navbar'], index_files=index_files, password=password)
+sos_run('update-nb', nb_info=[get_commit_info(x[:-5] + 'Rmd' if path(x).with_suffix(".Rmd").exists() else x, conf) for x in notebook_files], remove_whiteline=conf['remove_whiteline'], footer=conf['footer'], notebook_files=notebook_files, password=password)
+sos_run('update-wf', pipeline_files=pipeline_files)
+sos_run('update-toc', binders=binders, notebook_files=notebook_files, index_files=index_files, pipeline_files=pipeline_files, homepage=conf['homepage'], exclude_file=conf['exclude_file'])
+sos_run('update-search', url=conf['site_url'], generated_files=generated_files)
+sos_run('remove-obsolete', conf=conf, binders=binders, notebook_files=notebook_files, pipeline_files=pipeline_files, index_files=index_files, generated_files=generated_files, password=password)
 sos_run('release-website', conf=conf)
 
-[default_4]
-# remove intermediate files
+[default_4 (Clean up)]
 stop_if(status)
-hp = [path(conf["homepage"]).with_suffix(".ipynb")] if conf["homepage"].endswith(".Rmd") else []
-for item in [binder + '/_index.ipynb' for binder in binders] + [x.replace('.Rmd', '.ipynb') for x in rmd_files] + hp:
+hp = [path(conf["homepage"]).with_suffix(".ipynb")] if conf["homepage"].endswith(".Rmd") or conf["homepage"].endswith(".md") else []
+for item in [binder + '/_index.ipynb' for binder in binders] + hp:
   try:
     os.remove(item)
   except OSError:
